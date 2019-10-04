@@ -22,6 +22,8 @@ import views.Rectangle;
 
 public class View extends JFrame{
 	
+	
+	
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -34,7 +36,7 @@ public class View extends JFrame{
                 frame.add(panelLeft, BorderLayout.WEST);
                 
                 JPanel panelCenter = new JPanel();
-                Rectangle rectangle = new Rectangle(100,20);
+                Rectangle rectangle = new Rectangle(200,20);
                 panelCenter.add(rectangle);
                 frame.add(panelCenter, BorderLayout.CENTER);
                 

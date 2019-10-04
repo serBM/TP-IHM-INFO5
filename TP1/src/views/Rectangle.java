@@ -29,23 +29,28 @@ public class Rectangle extends JPanel {
 		int sizeButtonWidth = width/7;
 		int sizeButtonHeight = height+5;
 	
-		
+		int a = width/7;
 		
 		g2.setColor(Color.RED);
-
-		// Draw the red rectangle
-		g2.draw(new Rectangle2D.Double(0, 4, width/3, height));
+		g2.draw(new Rectangle2D.Double(0, 3, a, height));
+		
 		
 		g2.setColor(Color.BLUE);
-		g2.draw(new Rectangle2D.Double(width/3, 0, width/7, height+5));
-		g2.fillRect(width/3, 0, width/7, height+5);
+		g2.draw(new Rectangle2D.Double(a, 0, sizeButtonWidth, sizeButtonHeight));
+		g2.fill(new Rectangle2D.Double(a, 0, sizeButtonWidth, sizeButtonHeight));
 		
-		g2.draw(new Rectangle2D.Double(width/3+width/7, 4, width/7, height));
+		g2.setColor(Color.RED);
+		g2.draw(new Rectangle2D.Double(a+sizeButtonWidth, 3, a, height));
+		g2.fill(new Rectangle2D.Double(a+sizeButtonWidth, 3, a, height));
+		
+		g2.setColor(Color.BLUE);
+		g2.draw(new Rectangle2D.Double(a+sizeButtonWidth+a, 0, sizeButtonWidth, sizeButtonHeight));
+		g2.fill(new Rectangle2D.Double(a+sizeButtonWidth+a, 0, sizeButtonWidth, sizeButtonHeight));
+
+		
+		g2.setColor(Color.RED);
+		g2.draw(new Rectangle2D.Double(2*(a+sizeButtonWidth), 3, a, height));
 		
 		
-		g2.draw(new Rectangle2D.Double(2*width/3, 0, width/7, height+5));
-		g2.fillRect(2*width/3, 0, width/7, height+5);
-	
-		g2.draw(new Rectangle2D.Double(2*width/3+width/7, 4, width/3, height));
 	}
 }
