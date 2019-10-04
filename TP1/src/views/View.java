@@ -30,24 +30,16 @@ public class View extends JFrame{
                 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 
                 JPanel panelLeft = new JPanel();
-                
                 panelLeft.add(new JTextField("0"));
-                panelLeft.add(new Rectangle(20));
-                panelLeft.add(new JButton("-"));
-
-                
                 frame.add(panelLeft, BorderLayout.WEST);
                 
-                frame.add(new Rectangle(100), BorderLayout.CENTER);
+                JPanel panelCenter = new JPanel();
+                Rectangle rectangle = new Rectangle(100,20);
+                panelCenter.add(rectangle);
+                frame.add(panelCenter, BorderLayout.CENTER);
                 
                 JPanel panelRight = new JPanel();
-
-               
-                panelRight.add(new JButton("+"));
-                panelRight.add(new Rectangle(20));
                 panelRight.add(new JTextField("100"));
-               
-                
                 frame.add(panelRight, BorderLayout.EAST);
 
                 frame.pack();
