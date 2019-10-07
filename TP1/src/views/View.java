@@ -22,8 +22,8 @@ public class View extends JFrame {
 		this.setSize(400, 400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-		bMin.setBounds(0, 200, 10, 30);
-		bMax.setBounds(200, 200, 10, 30);
+		bMin.setBounds(10, 200, 10, 30);
+		bMax.setBounds(380, 200, 10, 30);
 		pan.add(bMin);
 		pan.add(bMax);
 		this.setContentPane(pan);
