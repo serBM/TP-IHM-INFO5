@@ -5,11 +5,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class Rectangle extends JPanel {
 	
 	int width, height;
@@ -22,11 +20,10 @@ public class Rectangle extends JPanel {
 	
 	
 	protected void paintComponent(Graphics g) {
-		// Draw a rectangle using Rectangle2D class
 		Graphics2D g2 = (Graphics2D) g;
 		
 	
-		int sizeButtonWidth = width/7;
+		int sizeButtonWidth = width/30;
 		int sizeButtonHeight = height+5;
 	
 		int a = width/7;
@@ -47,7 +44,6 @@ public class Rectangle extends JPanel {
 		g2.draw(new Rectangle2D.Double(a+sizeButtonWidth+a, 0, sizeButtonWidth, sizeButtonHeight));
 		g2.fill(new Rectangle2D.Double(a+sizeButtonWidth+a, 0, sizeButtonWidth, sizeButtonHeight));
 
-		
 		g2.setColor(Color.RED);
 		g2.draw(new Rectangle2D.Double(2*(a+sizeButtonWidth), 3, a, height));
 		

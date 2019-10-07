@@ -1,53 +1,57 @@
 package views;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.geom.Rectangle2D;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import views.Rectangle;
 
+@SuppressWarnings("serial")
 public class View extends JFrame{
 	
 	
-	
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JFrame frame = new JFrame("Draw Rectangle");
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                
-                JPanel panelLeft = new JPanel();
-                panelLeft.add(new JTextField("0"));
-                frame.add(panelLeft, BorderLayout.WEST);
-                
-                JPanel panelCenter = new JPanel();
-                Rectangle rectangle = new Rectangle(200,20);
-                panelCenter.add(rectangle);
-                frame.add(panelCenter, BorderLayout.CENTER);
-                
-                JPanel panelRight = new JPanel();
-                panelRight.add(new JTextField("100"));
-                frame.add(panelRight, BorderLayout.EAST);
+	public View() {
+		setTitle("Range slider");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        JPanel panelLeft = panelLeft();
+        add(panelLeft, BorderLayout.WEST);
+        
+        JPanel panelCenter = panelCenter();
+        add(panelCenter, BorderLayout.CENTER);
+        
+        JPanel panelRight = panelRight();
+        add(panelRight, BorderLayout.EAST);
 
-                frame.pack();
-                frame.setVisible(true);
-            }
-        });
+        this.setSize(800, 40);
+        pack();
+        setVisible(true);
+	}
+	
+    private JPanel panelRight() {
+    	JPanel panel = new JPanel();
+        panel.add(new JTextField("100"));
+        return panel;
+	}
+
+	private JPanel panelCenter() {
+        JPanel panel = new JPanel();
+        Rectangle rectangle = new Rectangle(800,20);
+        panel.add(rectangle);
+        return panel;
+	}
+
+	private JPanel panelLeft() {
+    	 JPanel panel = new JPanel();
+    	 panel.add(new JTextField("0"));
+         return panel;
+	}
+
+	@SuppressWarnings("unused")
+	public static void main(String[] args) {
+        View view = new View();
     }
 }
 
