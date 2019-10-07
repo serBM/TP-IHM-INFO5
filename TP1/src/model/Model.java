@@ -1,5 +1,4 @@
 package model;
 
-public class Model {
-
+public class Model{
 }

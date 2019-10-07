@@ -1,18 +1,30 @@
 package views;
+import controller.Controller;
 
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import views.Rectangle;
 
 @SuppressWarnings("serial")
 public class View extends JFrame{
-	
+
+	private JPanel pan = new JPanel();
+	private JButton bMin = new JButton("1");
+	private JButton bMax = new JButton("2");
+	private Controller c = new Controller(bMin, bMax);
+
+
 	
 	public View() {
+		
+		// CODE JADE
+		
 		setTitle("Range slider");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
@@ -28,6 +40,23 @@ public class View extends JFrame{
         this.setSize(800, 40);
         pack();
         setVisible(true);
+        
+        // CODE MAXENCE
+        
+        /*
+		this.setLayout(null);
+		pan.setLayout(null);
+		this.setTitle("Test");
+		this.setSize(400, 400);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		bMin.setBounds(10, 200, 10, 30);
+		bMax.setBounds(380, 200, 10, 30);
+		pan.add(bMin);
+		pan.add(bMax);
+		this.setContentPane(pan);
+		this.setVisible(true);
+		*/
 	}
 	
     private JPanel panelRight() {
@@ -53,5 +82,5 @@ public class View extends JFrame{
 	public static void main(String[] args) {
         View view = new View();
     }
-}
 
+}
