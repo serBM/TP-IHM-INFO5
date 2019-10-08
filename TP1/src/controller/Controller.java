@@ -1,55 +1,70 @@
 package controller;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
 
-import javax.swing.JButton;
+import javax.swing.JPanel;
 
-public class Controller implements MouseListener {
+@SuppressWarnings("serial")
+public class Controller extends JPanel {
 
 	Point pStart;
 	Point pEnd;
-	JButton bMin;
-	JButton bMax;
+	Point buttonMin = new Point(40, 10);
+	Point buttonMax = new Point(230, 10);
+	Point pMin = new Point(10, 10);
+	Point pMax = new Point(290, 10);
+	int wb = 15, hb = 15;
+	int ww = 300, hw = 200;
 
-	public Controller(JButton b1, JButton b2) {
-		bMin = b1;
-		bMax = b2;
-		bMin.addMouseListener(this);
-		bMax.addMouseListener(this);
+	public Controller() {
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				pStart = e.getPoint();
+			}
+		});
+
+		addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				pEnd = e.getPoint();
+				if ((pEnd.x >= pMin.x) && (pEnd.x + wb <= pMax.x)) {
+					if ((pStart.x >= buttonMin.x) && (pStart.x <= buttonMin.x + wb) && (pStart.y >= buttonMin.y)
+							&& (pStart.y <= buttonMin.y + hb) && (pEnd.x + wb <= buttonMax.x)) {
+						buttonMin.x = pEnd.x;
+					}
+					if ((pStart.x >= buttonMax.x) && (pStart.x <= buttonMax.x + wb) && (pStart.y >= buttonMax.y)
+							&& (pStart.y <= buttonMax.y + hb) && (pEnd.x >= buttonMin.x + wb)) {
+						buttonMax.x = pEnd.x;
+					}
+					repaint();
+				}
+				pStart = pEnd;
+			}
+		});
 	}
 
-	public void mouseClicked(MouseEvent arg0) {
-	}
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
-	public void mouseEntered(MouseEvent arg0) {
-	}
+		((Graphics2D) g).setColor(Color.RED);
+		((Graphics2D) g).draw(new Rectangle2D.Double(pMin.x, pMin.y, buttonMin.x - pMin.x, hb));
 
-	public void mouseExited(MouseEvent arg0) {
-	}
+		((Graphics2D) g).setColor(Color.BLUE);
+		((Graphics2D) g).fill(new Rectangle2D.Double(buttonMin.x, buttonMin.y, wb, hb));
 
-	public void mousePressed(MouseEvent arg0) {
-		if(arg0.getSource() == bMin) {
-			pStart = bMin.getLocation();
-			System.out.println("bMin - Mouse pressed : " + pStart);
-		}
-		else {
-			pStart = bMax.getLocation();
-			System.out.println("bMax - Mouse pressed : " + pStart);
-		}
-	}
+		((Graphics2D) g).setColor(Color.RED);
+		((Graphics2D) g)
+				.fill(new Rectangle2D.Double(buttonMin.x + wb, buttonMin.y, buttonMax.x - buttonMin.x - wb, hb));
 
-	public void mouseReleased(MouseEvent arg0) {
-		pEnd = arg0.getPoint();
-		if(arg0.getSource() == bMin) {
-			bMin.setLocation(pEnd.x + pStart.x, pStart.y);
-			System.out.println("bMin - Mouse released : " + pEnd);
-		}
-		else {
-			bMax.setLocation(pEnd.x + pStart.x, pStart.y);
-			System.out.println("bMax - Mouse released : " + pEnd);
-		}
-	}
+		((Graphics2D) g).setColor(Color.BLUE);
+		((Graphics2D) g).fill(new Rectangle2D.Double(buttonMax.x, buttonMax.y, wb, hb));
 
+		((Graphics2D) g).setColor(Color.RED);
+		((Graphics2D) g).draw(new Rectangle2D.Double(buttonMax.x + wb, pMax.y, pMax.x - buttonMax.x - wb, hb));
+	}
 }
