@@ -1,10 +1,9 @@
 package views;
 
 import controller.Controller;
-import javafx.scene.layout.HBox;
+//import javafx.scene.layout.HBox;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -13,12 +12,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class View extends JFrame{
 
 	public View() {
 		
 		setTitle("Range Slider");
-		setSize(350,60);
+		setSize(380,60);
 		
 		//Container cPane = this.getContentPane();
 		//cPane.add(new Controller(10, 10, 290, 10, 15, 15));
@@ -53,6 +53,7 @@ public class View extends JFrame{
 
 	public static void main(String[] args) {
 		
+		@SuppressWarnings("unused")
 		View view = new View();
 
 	}
