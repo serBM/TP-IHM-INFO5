@@ -15,14 +15,14 @@ public class Controller extends JPanel {
 
 	Point pStart;
 	Point pEnd;
-	Point buttonMin = new Point(40, 10);
-	Point buttonMax = new Point(230, 10);
-	Point pMin = new Point(10, 10);
-	Point pMax = new Point(290, 10);
-	int wb = 15, hb = 15;
-	int ww = 300, hw = 200;
+	Point buttonMin;// = new Point(40, 10);
+	Point buttonMax;// = new Point(230, 10);
+	Point pMin; // = new Point(10, 10);
+	Point pMax;// = new Point(290, 10);
+	int wb, hb;
+	//int ww = 300, hw = 200;
 
-	public Controller() {
+	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb) {
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				pStart = e.getPoint();
@@ -46,6 +46,12 @@ public class Controller extends JPanel {
 				pStart = pEnd;
 			}
 		});
+		this.wb = wb;
+		this.hb = hb;
+		pMin = new Point(xmin, ymin);
+		pMax = new Point(xmax, ymax);
+		buttonMin = new Point(xmin, ymin);
+		buttonMax = new Point(xmax-wb, ymin);
 	}
 
 	public void paintComponent(Graphics g) {

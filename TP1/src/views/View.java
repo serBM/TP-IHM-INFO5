@@ -25,7 +25,7 @@ public class View {
 			}
 		});
 		Container cPane = jFrame.getContentPane();
-		cPane.add(new Controller());
+		cPane.add(new Controller(10, 10, 290, 10, 15, 15));
 		jFrame.setVisible(true);
 	}
 }
