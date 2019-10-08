@@ -28,7 +28,7 @@ public class View extends JFrame{
 		JTextField text1 = new JTextField("0");
 		text1.setPreferredSize( new Dimension( 40, 50));
 		
-		JTextField text2 = new JTextField("100");
+		JTextField text2 = new JTextField("10");
 		text2.setPreferredSize( new Dimension( 40, 50 ) );
 
 		Controller slider = new Controller(10, 10, 290, 10, 15, 15, text1, text2);

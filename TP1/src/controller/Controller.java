@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
@@ -54,9 +55,29 @@ public class Controller extends JPanel {
 						buttonMax.x = pEnd.x;
 						text2.setText(m.getValue(buttonMax.x, wb));
 					}
-					repaint();
 				}
 				pStart = pEnd;
+				repaint();
+			}
+		});
+
+		text1.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				int n = Integer.parseInt(text1.getText());
+				if ((n >= m.getMin()) && (n <= m.getMax()) && (m.setValue(n, wb) + wb <= buttonMax.x)) {
+					buttonMin.x = m.setValue(n, wb);
+				}
+				repaint();
+			}
+		});
+
+		text2.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				int n = Integer.parseInt(text2.getText());
+				if ((n >= m.getMin()) && (n <= m.getMax()) && (m.setValue(n, wb) >= buttonMin.x + wb)) {
+					buttonMax.x = m.setValue(n, wb);
+				}
+				repaint();
 			}
 		});
 	}
