@@ -8,24 +8,29 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-public class View {
+public class View extends JFrame{
 
 	public View() {
-
-	}
-
-	public static void main(String[] args) {
-		JFrame jFrame = new JFrame();
-		jFrame.setTitle("");
-		jFrame.setSize(300, 200);
-		jFrame.addWindowListener(new WindowAdapter() {
+		
+		setTitle("Range Slider");
+		setSize(300,100);
+		
+		Container cPane = this.getContentPane();
+		cPane.add(new Controller(10, 10, 290, 10, 15, 15));
+		
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
-		Container cPane = jFrame.getContentPane();
-		cPane.add(new Controller(10, 10, 290, 10, 15, 15));
-		jFrame.setVisible(true);
+		
+		setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		
+		View view = new View();
+
 	}
 }

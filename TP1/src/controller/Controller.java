@@ -7,8 +7,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class Controller extends JPanel {
@@ -23,6 +23,7 @@ public class Controller extends JPanel {
 	//int ww = 300, hw = 200;
 
 	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb) {
+		
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				pStart = e.getPoint();
@@ -56,21 +57,24 @@ public class Controller extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		Color blue = new Color(100, 155, 201);
+		Color grey = new Color(216, 215, 215);
 
-		((Graphics2D) g).setColor(Color.RED);
-		((Graphics2D) g).draw(new Rectangle2D.Double(pMin.x, pMin.y, buttonMin.x - pMin.x, hb));
+		((Graphics2D) g).setColor(grey);
+		((Graphics2D) g).fill(new Rectangle2D.Double(pMin.x, pMin.y, buttonMin.x - pMin.x, hb));
 
-		((Graphics2D) g).setColor(Color.BLUE);
+		((Graphics2D) g).setColor(Color.WHITE);
 		((Graphics2D) g).fill(new Rectangle2D.Double(buttonMin.x, buttonMin.y, wb, hb));
 
-		((Graphics2D) g).setColor(Color.RED);
+		((Graphics2D) g).setColor(blue);
 		((Graphics2D) g)
 				.fill(new Rectangle2D.Double(buttonMin.x + wb, buttonMin.y, buttonMax.x - buttonMin.x - wb, hb));
 
-		((Graphics2D) g).setColor(Color.BLUE);
+		((Graphics2D) g).setColor(Color.WHITE);
 		((Graphics2D) g).fill(new Rectangle2D.Double(buttonMax.x, buttonMax.y, wb, hb));
 
-		((Graphics2D) g).setColor(Color.RED);
-		((Graphics2D) g).draw(new Rectangle2D.Double(buttonMax.x + wb, pMax.y, pMax.x - buttonMax.x - wb, hb));
+		((Graphics2D) g).setColor(grey);
+		((Graphics2D) g).fill(new Rectangle2D.Double(buttonMax.x + wb, pMax.y, pMax.x - buttonMax.x - wb, hb));
 	}
 }
