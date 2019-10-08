@@ -22,8 +22,9 @@ public class Controller extends JPanel {
 	int wb, hb;
 	//int ww = 300, hw = 200;
 
-	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb) {
+	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb, JTextField text1, JTextField text2) {
 		
+
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				pStart = e.getPoint();
@@ -43,6 +44,9 @@ public class Controller extends JPanel {
 						buttonMax.x = pEnd.x;
 					}
 					repaint();
+					
+					String point = Integer.toString(pEnd.x);
+					text1.setText(point);
 				}
 				pStart = pEnd;
 			}
