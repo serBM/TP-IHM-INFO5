@@ -13,6 +13,9 @@ import javax.swing.JTextField;
 
 import model.Model;
 
+/*
+ * generates a range slider
+ */
 @SuppressWarnings("serial")
 public class Controller extends JPanel {
 
