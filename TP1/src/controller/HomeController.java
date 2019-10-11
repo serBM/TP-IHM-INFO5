@@ -2,7 +2,6 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import model.Home;
 
@@ -20,7 +19,6 @@ public class HomeController {
 	 * generates randomly several homes
 	 */
 	public static List<Home> initRandomHomes(int nbHomes, int xA, int yA, int xB, int yB) {
-		Random rand = new Random();
 
 		List<Home> list = new ArrayList<Home>();
 				
@@ -72,6 +70,10 @@ public class HomeController {
 		return newList;
 	}
 	
+	/*
+	 * return a random value
+	 * giving the minimum and maximum
+	 */
 	public static int returnRandomValue(int min, int max) {
 		return (int) ((Math.random() * ((max - min) + 1)) + min);
 	}

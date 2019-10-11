@@ -2,13 +2,14 @@ package model;
 
 
 public class Home {
-	int distToA;
-	int distToB;
-	int roomsNb;
-	int price;
-	int x;
-	int y;
-	int id;
+	
+	int distToA; //distance to A
+	int distToB; //distance to B
+	int roomsNb; //number of rooms
+	int price; //price
+	int x; //coordinate on x
+	int y; //coordinate on y
+	int id; //id
 
 
 	public Home(int x, int y, int distToA, int distToB, int roomsNb, int price) {

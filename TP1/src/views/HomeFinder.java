@@ -3,20 +3,14 @@ package views;
 import controller.RangeSlider;
 import controller.HomeController;
 import model.Home;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,25 +22,27 @@ import javax.swing.event.DocumentListener;
 @SuppressWarnings("serial")
 public class HomeFinder extends JFrame {
 
-	List<Home> list;
-	List<Home> listCriteria;
+	List<Home> list; //the list of all the homes
+	List<Home> listCriteria; //the list of homes that match the criteria of research
 
-	int aDistA = 1;
-	int bDistA = 200;
+	int aDistA = 1; //minimum of distance to point A
+	int bDistA = 200; //maximum of distance to point A
 
-	int aDistB = 1;
-	int bDistB = 200;
+	int aDistB = 1; //minimum of distance to point B
+	int bDistB = 200; //maximum of distance to point B
 
-	int aPrice = 50;
-	int bPrice = 500;
+	int aPrice = 50; //minimum of price
+	int bPrice = 500; //maximum of price
 
-	int aRooms = 1;
-	int bRooms = 7;
+	int aRooms = 1; //minimum of rooms
+	int bRooms = 7; //maximum of rooms
 	
-	int width = 800;
-	int height = 600;
+	int width = 800; //width of the window
+	int height = 600; //height of the window
 	
 	//coordinates of the point A and B
+	//the distance between A and B must be inferior to bDistA and bDistB
+	//we could have generate randomly those points
 	static int xA = 150;
 	static int yA = 200;
 	static int xB = 220;
@@ -60,37 +56,34 @@ public class HomeFinder extends JFrame {
 		setSize(width, height);
 		setResizable(false);
 		
-		Container pane = this.getContentPane();
+		Container pane = this.getContentPane(); 
 
 		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
-		
 		JPanel infoPanel = new JPanel();
-		createInfoPanel(list.size(), infoPanel);
-		leftPanel.add(infoPanel);
-	
 		JPanel homesPanel = new JPanel();
-		displayResults(list, homesPanel);
-		homesPanel.setPreferredSize(new Dimension(width/2, height/3));
-
 		JPanel mapPanel = new JPanel();
-		mapPanel.add(new Map(width/2, height, 100, xA, yA, xB, yB, list));
-	
-		JPanel rangeSlidersPanel = createRangeSliders(infoPanel, homesPanel, mapPanel);
-		rangeSlidersPanel.setPreferredSize(new Dimension(width/2, height/2));
-		leftPanel.add(rangeSlidersPanel);
+		JPanel rangeSlidersPanel = new JPanel();
 		
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
 		leftPanel.setPreferredSize(new Dimension(width/2, height));
-
-		pane.add(homesPanel, BorderLayout.PAGE_END);
-
-		pane.add(leftPanel, BorderLayout.LINE_START);
 		
+		homesPanel.setPreferredSize(new Dimension(width/2, height/3));
 		
-		pane.add(mapPanel, BorderLayout.CENTER);
-				
+		rangeSlidersPanel.setPreferredSize(new Dimension(width/2, height/2));
 		rangeSlidersPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+		createInfoPanel(list.size(), infoPanel);
+		displayResults(list, homesPanel);
+		mapPanel.add(new Map(width/2, height, xA, yA, xB, yB, list));
+		rangeSlidersPanel = createRangeSliders(infoPanel, homesPanel, mapPanel);
+
+		leftPanel.add(infoPanel);
+		leftPanel.add(rangeSlidersPanel);
+		
+		pane.add(homesPanel, BorderLayout.PAGE_END);
+		pane.add(leftPanel, BorderLayout.LINE_START);
+		pane.add(mapPanel, BorderLayout.CENTER);
+				
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -122,7 +115,7 @@ public class HomeFinder extends JFrame {
 	}
 
 	/*
-	 * displays the number of results availables
+	 * displays the number of results available
 	 */
 	private void createInfoPanel(int nb, JPanel infoPanel) {
 		infoPanel.add(new JLabel("Nombre de biens disponibles : " + nb));
@@ -271,7 +264,6 @@ public class HomeFinder extends JFrame {
 	    bv.add(nbRoomsLabel);
 	    
 		homesPanel.add(bv);
-		
 	}
 	
 	/*
@@ -286,11 +278,10 @@ public class HomeFinder extends JFrame {
 		homesPanel.removeAll();
 		mapPanel.removeAll();
 
-		//re create the info panel with the number of homes that match the criteria
+		//re create the panels with the homes that match the criteria
 		createInfoPanel(listCriteria.size(), infoPanel);
-		//re create the homes panel with the list of homes that match the criteria
 		displayResults(listCriteria, homesPanel);
-		mapPanel.add(new Map(width/2, height, 100, xA, yA, xB, yB, listCriteria));
+		mapPanel.add(new Map(width/2, height, xA, yA, xB, yB, listCriteria));
 		
 		//update the views
 		mapPanel.repaint();
@@ -304,7 +295,6 @@ public class HomeFinder extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
 		int nbHomes = 10;
 		
 		List<Home> list = HomeController.initRandomHomes(nbHomes, xA, yA, xB, yB);
