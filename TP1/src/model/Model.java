@@ -10,7 +10,6 @@ public class Model {
 		this.min = min;
 		this.max = max;
 		this.unitSize = (float) (rMax - rMin) / (float) (max - min);
-		System.out.println("unit size : " + unitSize);
 	}
 
 	public String getValue(int pos, int wb) {

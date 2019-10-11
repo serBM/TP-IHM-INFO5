@@ -9,7 +9,7 @@ Le but de ce premier TP est d'implémenter un Range Slider. Le sujet détaillé 
 
 # Explications
 
-    écrire ici intro
+    RangeSlider contient le Controller et la View. HomeFinder importe RangeSlider. RangeSlider importe Model.
 
 ## Choix de conception
 

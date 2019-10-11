@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import model.Model;
 
@@ -17,7 +19,7 @@ import model.Model;
  * generates a range slider
  */
 @SuppressWarnings("serial")
-public class Controller extends JPanel {
+public class RangeSlider extends JPanel {
 
 	Model m;
 	Point pStart;
@@ -29,7 +31,7 @@ public class Controller extends JPanel {
 	int wb, hb;
 	int oldtextmin, oldtextmax, newtextmin, newtextmax;
 
-	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb, JTextField text1, JTextField text2) {
+	public RangeSlider(int xmin, int ymin, int xmax, int ymax, int wb, int hb, JTextField text1, JTextField text2) {
 
 		this.wb = wb;
 		this.hb = hb;

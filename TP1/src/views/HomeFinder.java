@@ -1,6 +1,6 @@
 package views;
 
-import controller.Controller;
+import controller.RangeSlider;
 import controller.HomeController;
 import model.Home;
 
@@ -22,7 +22,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 @SuppressWarnings("serial")
-public class View extends JFrame {
+public class HomeFinder extends JFrame {
 
 	List<Home> list;
 	List<Home> listCriteria;
@@ -39,12 +39,12 @@ public class View extends JFrame {
 	int aRooms = 1;
 	int bRooms = 7;
 		
-	public View(List<Home> list) {
+	public HomeFinder(List<Home> list) {
 
 		this.list = list;
 
 		setTitle("Range Slider");
-		setSize(390, 700);
+		setSize(380, 700);
 		setResizable(false);
 
 		JPanel panel = new JPanel();
@@ -52,11 +52,11 @@ public class View extends JFrame {
 		
 		JPanel infoPanel = new JPanel();
 		createInfoPanel(list.size(), infoPanel);
-		infoPanel.setPreferredSize(new Dimension(390, 30));
+		infoPanel.setPreferredSize(new Dimension(380, 30));
 		panel.add(infoPanel);
 		
 		JPanel homesPanel = new JPanel();
-		homesPanel.setPreferredSize(new Dimension(390, 700));
+		homesPanel.setPreferredSize(new Dimension(380, 700));
 		
 		JPanel rangeSlidersPanel = createRangeSliders(infoPanel, homesPanel);
 		panel.add(rangeSlidersPanel);
@@ -214,7 +214,7 @@ public class View extends JFrame {
 		});
 
 		// creates the range slider and updates its values on the textfields
-		Controller slider = new Controller(10, 10, 290, 10, 16, 16, fromTextField, toTextField);
+		RangeSlider slider = new RangeSlider(10, 10, 290, 10, 16, 16, fromTextField, toTextField);
 
 		// creates a panel and add the textfields and slider to it
 		JPanel panel = new JPanel(new BorderLayout());
@@ -277,6 +277,6 @@ public class View extends JFrame {
 		List<Home> list = HomeController.initRandomHomes(nbHomes);
 
 		@SuppressWarnings("unused")
-		View view = new View(list);
+		HomeFinder view = new HomeFinder(list);
 	}
 }
