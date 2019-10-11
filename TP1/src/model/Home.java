@@ -6,9 +6,14 @@ public class Home {
 	int distToB;
 	int roomsNb;
 	int price;
+	int x;
+	int y;
+	int id;
 
 
-	public Home(int distToA, int distToB, int roomsNb, int price) {
+	public Home(int x, int y, int distToA, int distToB, int roomsNb, int price) {
+		this.x = x;
+		this.y = y;
 		this.distToA = distToA;
 		this.distToB = distToB;
 		this.roomsNb = roomsNb;
@@ -29,5 +34,21 @@ public class Home {
 	
 	public int getDistToA() {
 		return distToA;
+	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return id;
 	}
 }
