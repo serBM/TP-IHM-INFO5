@@ -10,18 +10,19 @@ public class Model {
 		this.min = min;
 		this.max = max;
 		this.unitSize = (float) (rMax - rMin) / (float) (max - min);
+		System.out.println("unit size : " + unitSize);
 	}
 
 	public String getValue(int pos, int wb) {
 		float posInSlider;
 		int value;
 		posInSlider = (pos + (wb / 2)) - rMin;
-		value = (int) (posInSlider / unitSize);
+		value = (int) (posInSlider / unitSize) + min;
 		return Integer.toString(value);
 	}
 
 	public int setValue(int n, int wb) {
-		return (int) ((float) rMin - (wb/2) + (float) n * unitSize);
+		return (int) ((float) rMin - (wb / 2) + (float) (n-min) * unitSize);
 	}
 
 	public int getMin() {

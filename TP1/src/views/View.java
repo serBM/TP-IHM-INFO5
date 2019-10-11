@@ -44,7 +44,7 @@ public class View extends JFrame {
 		this.list = list;
 
 		setTitle("Range Slider");
-		setSize(380, 700);
+		setSize(390, 700);
 		setResizable(false);
 
 		JPanel panel = new JPanel();
@@ -52,11 +52,11 @@ public class View extends JFrame {
 		
 		JPanel infoPanel = new JPanel();
 		createInfoPanel(list.size(), infoPanel);
-		infoPanel.setPreferredSize(new Dimension(380, 30));
+		infoPanel.setPreferredSize(new Dimension(390, 30));
 		panel.add(infoPanel);
 		
 		JPanel homesPanel = new JPanel();
-		homesPanel.setPreferredSize(new Dimension(380, 700));
+		homesPanel.setPreferredSize(new Dimension(390, 700));
 		
 		JPanel rangeSlidersPanel = createRangeSliders(infoPanel, homesPanel);
 		panel.add(rangeSlidersPanel);
@@ -214,7 +214,7 @@ public class View extends JFrame {
 		});
 
 		// creates the range slider and updates its values on the textfields
-		Controller slider = new Controller(10, 10, 290, 10, 15, 15, fromTextField, toTextField);
+		Controller slider = new Controller(10, 10, 290, 10, 16, 16, fromTextField, toTextField);
 
 		// creates a panel and add the textfields and slider to it
 		JPanel panel = new JPanel(new BorderLayout());

@@ -27,6 +27,7 @@ public class Controller extends JPanel {
 	Point pMin;
 	Point pMax;
 	int wb, hb;
+	int oldtextmin, oldtextmax, newtextmin, newtextmax;
 
 	public Controller(int xmin, int ymin, int xmax, int ymax, int wb, int hb, JTextField text1, JTextField text2) {
 
@@ -34,9 +35,11 @@ public class Controller extends JPanel {
 		this.hb = hb;
 		pMin = new Point(xmin, ymin);
 		pMax = new Point(xmax, ymax);
-		buttonMin = new Point(xmin, ymin);
-		buttonMax = new Point(xmax - wb, ymin);
-		m = new Model(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()), pMin.x, pMax.x);
+		buttonMin = new Point(xmin - wb/2, ymin);
+		buttonMax = new Point(xmax - wb/2, ymin);
+		m = new Model(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()), xmin, xmax);
+		oldtextmin = Integer.parseInt(text1.getText());
+		oldtextmax = Integer.parseInt(text2.getText());
 
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -52,11 +55,13 @@ public class Controller extends JPanel {
 							&& (pStart.y <= buttonMin.y + hb) && (pEnd.x + wb <= buttonMax.x)) {
 						buttonMin.x = pEnd.x;
 						text1.setText(m.getValue(buttonMin.x, wb));
+						oldtextmin = Integer.parseInt(text1.getText());
 					}
 					if ((pStart.x >= buttonMax.x) && (pStart.x <= buttonMax.x + wb) && (pStart.y >= buttonMax.y)
 							&& (pStart.y <= buttonMax.y + hb) && (pEnd.x >= buttonMin.x + wb)) {
 						buttonMax.x = pEnd.x;
 						text2.setText(m.getValue(buttonMax.x, wb));
+						oldtextmax = Integer.parseInt(text2.getText());
 					}
 				}
 				pStart = pEnd;
@@ -66,9 +71,13 @@ public class Controller extends JPanel {
 
 		text1.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				int n = Integer.parseInt(text1.getText());
-				if ((n >= m.getMin()) && (n <= m.getMax()) && (m.setValue(n, wb) + wb <= buttonMax.x)) {
-					buttonMin.x = m.setValue(n, wb);
+				newtextmin = Integer.parseInt(text1.getText());
+				if ((newtextmin >= m.getMin()) && (newtextmin <= m.getMax()) && (m.setValue(newtextmin, wb) + wb <= buttonMax.x)) {
+					buttonMin.x = m.setValue(newtextmin, wb);
+					oldtextmin = newtextmin;
+				}
+				else {
+					text1.setText(Integer.toString(oldtextmin));
 				}
 				repaint();
 			}
@@ -76,9 +85,13 @@ public class Controller extends JPanel {
 
 		text2.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				int n = Integer.parseInt(text2.getText());
-				if ((n >= m.getMin()) && (n <= m.getMax()) && (m.setValue(n, wb) >= buttonMin.x + wb)) {
-					buttonMax.x = m.setValue(n, wb);
+				newtextmax = Integer.parseInt(text2.getText());
+				if ((newtextmax >= m.getMin()) && (newtextmax <= m.getMax()) && (m.setValue(newtextmax, wb) >= buttonMin.x + wb)) {
+					buttonMax.x = m.setValue(newtextmax, wb);
+					oldtextmax = newtextmax;
+				}
+				else {
+					text2.setText(Integer.toString(oldtextmax));
 				}
 				repaint();
 			}
