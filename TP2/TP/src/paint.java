@@ -18,10 +18,12 @@ import java.awt.Point;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
-
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
+import java.awt.geom.RoundRectangle2D;
 import java.awt.event.*;
 import javax.swing.event.*;
 
@@ -35,6 +37,36 @@ import javax.swing.SwingUtilities;
 /* paint *******************************************************************/
 
 class Paint extends JFrame {
+	
+	Vector<Color> vectColors = new Vector<Color>();
+
+	
+	class ColorTool extends AbstractAction
+    implements MouseInputListener {
+		Point o;
+		public ColorTool(String name) { super(name); }
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("using color " + this);
+			color = this;
+			panel.addMouseListener(color);
+		}
+		public void mouseClicked(MouseEvent e) {}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mousePressed(MouseEvent e) { }
+		public void mouseReleased(MouseEvent e) { }
+		public void mouseDragged(MouseEvent e) {}
+		public void mouseMoved(MouseEvent e) {}
+	}
+	
+	ColorTool colors[] = {
+		new ColorTool("blue") {
+			//ici ajouter la couleur Color.BLUE au vecteur vectColors
+			
+		}
+	};
+	
+	
 	Vector<Shape> shapes = new Vector<Shape>();
 
 	class Tool extends AbstractAction
@@ -72,7 +104,7 @@ class Paint extends JFrame {
 				panel.repaint();
 			}
 		},
-		new Tool("rect") {
+		new Tool("rectangle") {
 			public void mouseDragged(MouseEvent e) {
 				Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 				if(rect == null) {
@@ -83,8 +115,48 @@ class Paint extends JFrame {
 				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
 				panel.repaint();
 			}
-		}
+		},
+		new Tool("ellipse") {
+			public void mouseDragged(MouseEvent e) {
+				Ellipse2D.Double ell = (Ellipse2D.Double)shape;
+				if(ell == null) {
+					ell = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
+					shapes.add(shape = ell);
+				}
+				ell.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
+				panel.repaint();
+			}
+		},
+		new Tool("round rectangle") {
+			public void mouseDragged(MouseEvent e) {
+				RoundRectangle2D.Double roundRect = (RoundRectangle2D.Double)shape;
+				if(roundRect == null) {
+					roundRect = new RoundRectangle2D.Double(o.getX(), o.getY(), 0, 0, 30, 30);
+					shapes.add(shape = roundRect);
+				}
+				roundRect.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
+				panel.repaint();
+			}
+		},
+		new Tool("line") {
+			public void mouseDragged(MouseEvent e) {
+				Line2D.Double line = (Line2D.Double)shape;
+				if(line == null) {
+					line = new Line2D.Double(o.getX(), o.getY(), 0, 0);
+					shapes.add(shape = line);
+				}
+				line.setLine(o.getX(), o.getY(),
+				             abs(e.getX()), abs(e.getY()));
+				panel.repaint();
+			}
+		},
+		
 	};
+	
+	ColorTool color;
+
 	Tool tool;
 
 	JPanel panel;
@@ -98,7 +170,14 @@ class Paint extends JFrame {
 				add(tool);
 			}
 		}}, BorderLayout.NORTH);
+		add(new JToolBar() {{
+			for(AbstractAction color: colors) {
+				add(color);
+			}
+		}}, BorderLayout.SOUTH);
+		
 		add(panel = new JPanel() {	
+						
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);	
 				Graphics2D g2 = (Graphics2D)g;
@@ -108,12 +187,21 @@ class Paint extends JFrame {
 				g2.setColor(Color.WHITE);
 				g2.fillRect(0, 0, getWidth(), getHeight());
 				
-				g2.setColor(Color.BLACK);
+				vectColors.add(Color.BLACK);
+				
 				for(Shape shape: shapes) {
+					g2.setColor(vectColors.lastElement());
+					System.out.println(vectColors.lastElement());
 					g2.draw(shape);
 				}
 			}
 		});
+		
+		addMouseListener(new MouseAdapter() { 
+	          public void mousePressed(MouseEvent me) { 
+	            System.out.println(me); 
+	          } 
+	        }); 
 
 		pack();
 		setVisible(true);
