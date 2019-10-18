@@ -3,7 +3,7 @@
 
 Le but de ce second TP est de... Le sujet détaillé est disponible sur ce dépot Git.
 
-**Deadline de remise du TP :**  Vendredi 8 novembre 2019 à 8h du matin.
+**Deadline de remise du TP :**  Vendredi 15 novembre 2019 à 10h du matin.
 
 **Membres du groupe :** VANDAL Jade, VINCENT Maxence, THOMAS Antoine
 
