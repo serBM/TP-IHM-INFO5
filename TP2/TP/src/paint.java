@@ -30,6 +30,7 @@ import javax.swing.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
@@ -38,12 +39,13 @@ import javax.swing.SwingUtilities;
 
 class Paint extends JFrame {
 	
-	Vector<Color> vectColors = new Vector<Color>();
+	Vector<ShapeCustom> shapesCustom = new Vector<ShapeCustom>();
+	
+	Color actualColor = Color.BLACK;
 
 	
 	class ColorTool extends AbstractAction
     implements MouseInputListener {
-		Point o;
 		public ColorTool(String name) { super(name); }
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("using color " + this);
@@ -59,19 +61,22 @@ class Paint extends JFrame {
 		public void mouseMoved(MouseEvent e) {}
 	}
 	
-	ColorTool colors[] = {
+	/*ColorTool colors[] = {
 		new ColorTool("blue") {
-			//ici ajouter la couleur Color.BLUE au vecteur vectColors
-			
+				actualColor = Color.BLUE;
+				System.out.println("tessst : " + actualColor);
+		},
+		new ColorTool("red") {
+			public void mouseClicked(MouseEvent e) {
+				actualColor = Color.RED;
+			}
 		}
-	};
+	};*/
 	
 	
-	Vector<Shape> shapes = new Vector<Shape>();
-
 	class Tool extends AbstractAction
 	           implements MouseInputListener {
-	   Point o;
+	    Point o;
 		Shape shape;
 		public Tool(String name) { super(name); }
 		public void actionPerformed(ActionEvent e) {
@@ -98,7 +103,11 @@ class Paint extends JFrame {
 				if(path == null) {
 					path = new Path2D.Double();
 					path.moveTo(o.getX(), o.getY());
-					shapes.add(shape = path);
+					
+					//shapes.add(shape = path);
+					System.out.println("actualColor : " + actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = path), actualColor);
+					shapesCustom.add(sc);
 				}
 				path.lineTo(e.getX(), e.getY());
 				panel.repaint();
@@ -109,7 +118,9 @@ class Paint extends JFrame {
 				Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 				if(rect == null) {
 					rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-					shapes.add(shape = rect);
+					//shapes.add(shape = rect);
+					ShapeCustom sc = new ShapeCustom((shape = rect), actualColor);
+					shapesCustom.add(sc);
 				}
 				rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -121,7 +132,9 @@ class Paint extends JFrame {
 				Ellipse2D.Double ell = (Ellipse2D.Double)shape;
 				if(ell == null) {
 					ell = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-					shapes.add(shape = ell);
+					//shapes.add(shape = ell);
+					ShapeCustom sc = new ShapeCustom((shape = ell), actualColor);
+					shapesCustom.add(sc);
 				}
 				ell.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -133,7 +146,9 @@ class Paint extends JFrame {
 				RoundRectangle2D.Double roundRect = (RoundRectangle2D.Double)shape;
 				if(roundRect == null) {
 					roundRect = new RoundRectangle2D.Double(o.getX(), o.getY(), 0, 0, 30, 30);
-					shapes.add(shape = roundRect);
+					//shapes.add(shape = roundRect);
+					ShapeCustom sc = new ShapeCustom((shape = roundRect), actualColor);
+					shapesCustom.add(sc);
 				}
 				roundRect.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -145,7 +160,9 @@ class Paint extends JFrame {
 				Line2D.Double line = (Line2D.Double)shape;
 				if(line == null) {
 					line = new Line2D.Double(o.getX(), o.getY(), 0, 0);
-					shapes.add(shape = line);
+					//shapes.add(shape = line);
+					ShapeCustom sc = new ShapeCustom((shape = line), actualColor);
+					shapesCustom.add(sc);
 				}
 				line.setLine(o.getX(), o.getY(),
 				             abs(e.getX()), abs(e.getY()));
@@ -170,10 +187,30 @@ class Paint extends JFrame {
 				add(tool);
 			}
 		}}, BorderLayout.NORTH);
-		add(new JToolBar() {{
-			for(AbstractAction color: colors) {
-				add(color);
+		
+		
+		JButton blue = new JButton("blue");
+		blue.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actualColor = Color.BLUE;
 			}
+        });
+		
+		JButton red = new JButton("red");
+		red.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actualColor = Color.RED;
+			}
+        });
+		
+		add(new JToolBar() {{
+			
+			add(blue);
+			add(red);
+			
+			
 		}}, BorderLayout.SOUTH);
 		
 		add(panel = new JPanel() {	
@@ -186,13 +223,10 @@ class Paint extends JFrame {
 		
 				g2.setColor(Color.WHITE);
 				g2.fillRect(0, 0, getWidth(), getHeight());
-				
-				vectColors.add(Color.BLACK);
-				
-				for(Shape shape: shapes) {
-					g2.setColor(vectColors.lastElement());
-					System.out.println(vectColors.lastElement());
-					g2.draw(shape);
+								
+				for(ShapeCustom shape: shapesCustom) {
+					g2.setColor(shape.getColor());
+					g2.draw(shape.getShape());
 				}
 			}
 		});
