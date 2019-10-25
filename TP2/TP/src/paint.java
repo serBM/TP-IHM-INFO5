@@ -260,14 +260,9 @@ class Paint extends JFrame {
 			public void mousePressed(MouseEvent me) {
 				System.out.println(me);
 				if(me.getButton() == MouseEvent.BUTTON3) {
-					  
+					 
 		        	  System.out.println("Right Click!");
-		        	  setLayout(null);
 		        	  
-		        	  JButton jb = new JButton("test");
-		        	  jb.setLocation(me.getX(), me.getY());
-		        	  add(jb);
-		        	  panel.repaint();
 		          }
 			}
 	    
