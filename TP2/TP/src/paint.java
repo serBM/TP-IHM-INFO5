@@ -48,6 +48,18 @@ class Paint extends JFrame {
 
 	Color actualColor = Color.BLACK;
 
+	boolean openMenu = false;
+	boolean openMenuShapes = false;
+	boolean openMenuColors = false;
+	Point menuPosition;
+	Point menuShapesPosition;
+	Point menuColorsPosition;
+	int menuRayon = 100;
+
+	Menu menu = new Menu(menuRayon, 2);
+	Menu menuShapes = new Menu(menuRayon, 5);
+	Menu menuColors = new Menu(menuRayon, 7);
+
 	@SuppressWarnings("serial")
 	class Tool extends AbstractAction implements MouseInputListener {
 		Point o;
@@ -92,63 +104,73 @@ class Paint extends JFrame {
 
 	@SuppressWarnings("serial")
 	Tool tools[] = { new Tool("pen") {
-			public void mouseDragged(MouseEvent e) {
-			Path2D.Double path = (Path2D.Double) shape;
-			if (path == null) {
-				path = new Path2D.Double();
-				path.moveTo(o.getX(), o.getY());
-				ShapeCustom sc = new ShapeCustom((shape = path), actualColor);
-				shapesCustom.add(sc);
+		public void mouseDragged(MouseEvent e) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				Path2D.Double path = (Path2D.Double) shape;
+				if (path == null) {
+					path = new Path2D.Double();
+					path.moveTo(o.getX(), o.getY());
+					ShapeCustom sc = new ShapeCustom((shape = path), actualColor);
+					shapesCustom.add(sc);
+				}
+				path.lineTo(e.getX(), e.getY());
+				panel.repaint();
 			}
-			path.lineTo(e.getX(), e.getY());
-			panel.repaint();
 		}
 	}, new Tool("rectangle") {
-				public void mouseDragged(MouseEvent e) {
-			Rectangle2D.Double rect = (Rectangle2D.Double) shape;
-			if (rect == null) {
-				rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-				ShapeCustom sc = new ShapeCustom((shape = rect), actualColor);
-				shapesCustom.add(sc);
+		public void mouseDragged(MouseEvent e) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				Rectangle2D.Double rect = (Rectangle2D.Double) shape;
+				if (rect == null) {
+					rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
+					ShapeCustom sc = new ShapeCustom((shape = rect), actualColor);
+					shapesCustom.add(sc);
+				}
+				rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
+						abs(e.getY() - o.getY()));
+				panel.repaint();
 			}
-			rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
-					abs(e.getY() - o.getY()));
-			panel.repaint();
 		}
 	}, new Tool("ellipse") {
 		public void mouseDragged(MouseEvent e) {
-			Ellipse2D.Double ell = (Ellipse2D.Double) shape;
-			if (ell == null) {
-				ell = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-				ShapeCustom sc = new ShapeCustom((shape = ell), actualColor);
-				shapesCustom.add(sc);
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				Ellipse2D.Double ell = (Ellipse2D.Double) shape;
+				if (ell == null) {
+					ell = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
+					ShapeCustom sc = new ShapeCustom((shape = ell), actualColor);
+					shapesCustom.add(sc);
+				}
+				ell.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
+						abs(e.getY() - o.getY()));
+				panel.repaint();
 			}
-			ell.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
-					abs(e.getY() - o.getY()));
-			panel.repaint();
 		}
 	}, new Tool("round rectangle") {
 		public void mouseDragged(MouseEvent e) {
-			RoundRectangle2D.Double roundRect = (RoundRectangle2D.Double) shape;
-			if (roundRect == null) {
-				roundRect = new RoundRectangle2D.Double(o.getX(), o.getY(), 0, 0, 30, 30);
-				ShapeCustom sc = new ShapeCustom((shape = roundRect), actualColor);
-				shapesCustom.add(sc);
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				RoundRectangle2D.Double roundRect = (RoundRectangle2D.Double) shape;
+				if (roundRect == null) {
+					roundRect = new RoundRectangle2D.Double(o.getX(), o.getY(), 0, 0, 30, 30);
+					ShapeCustom sc = new ShapeCustom((shape = roundRect), actualColor);
+					shapesCustom.add(sc);
+				}
+				roundRect.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
+						abs(e.getY() - o.getY()));
+				panel.repaint();
 			}
-			roundRect.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
-					abs(e.getY() - o.getY()));
-			panel.repaint();
 		}
 	}, new Tool("line") {
 		public void mouseDragged(MouseEvent e) {
-			Line2D.Double line = (Line2D.Double) shape;
-			if (line == null) {
-				line = new Line2D.Double(o.getX(), o.getY(), 0, 0);
-				ShapeCustom sc = new ShapeCustom((shape = line), actualColor);
-				shapesCustom.add(sc);
+			if (SwingUtilities.isLeftMouseButton(e)) {
+				Line2D.Double line = (Line2D.Double) shape;
+				if (line == null) {
+					line = new Line2D.Double(o.getX(), o.getY(), 0, 0);
+					ShapeCustom sc = new ShapeCustom((shape = line), actualColor);
+					shapesCustom.add(sc);
+				}
+				line.setLine(o.getX(), o.getY(), abs(e.getX()), abs(e.getY()));
+				panel.repaint();
 			}
-			line.setLine(o.getX(), o.getY(), abs(e.getX()), abs(e.getY()));
-			panel.repaint();
 		}
 	},
 
@@ -169,7 +191,7 @@ class Paint extends JFrame {
 				}
 			}
 		}, BorderLayout.NORTH);
-		
+
 		JButton black = new JButton("black");
 		black.addActionListener(new ActionListener() {
 			@Override
@@ -201,7 +223,7 @@ class Paint extends JFrame {
 				actualColor = Color.GREEN;
 			}
 		});
-		
+
 		JButton pink = new JButton("pink");
 		pink.addActionListener(new ActionListener() {
 			@Override
@@ -209,7 +231,7 @@ class Paint extends JFrame {
 				actualColor = Color.PINK;
 			}
 		});
-		
+
 		JButton yellow = new JButton("yellow");
 		yellow.addActionListener(new ActionListener() {
 			@Override
@@ -217,7 +239,7 @@ class Paint extends JFrame {
 				actualColor = Color.YELLOW;
 			}
 		});
-		
+
 		JButton magenta = new JButton("magenta");
 		magenta.addActionListener(new ActionListener() {
 			@Override
@@ -253,21 +275,119 @@ class Paint extends JFrame {
 					g2.setColor(shape.getColor());
 					g2.draw(shape.getShape());
 				}
+				if (openMenu) {
+					g2.setColor(Color.GRAY);
+					g2.fillOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					g2.setColor(Color.BLACK);
+					g2.drawOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					for (int i = 1; i <= 2; i++) {
+						double angle = Math.toRadians((360 / 2) * i);
+						int xi = (int) (menuRayon * Math.cos(angle) + menuPosition.x);
+						int yi = (int) (menuRayon * Math.sin(angle) + menuPosition.y);
+						g2.drawLine(menuPosition.x, menuPosition.y, xi, yi);
+					}
+				}
+				if (openMenuShapes) {
+					g2.setColor(Color.GRAY);
+					g2.fillOval(menuShapesPosition.x - menuRayon, menuShapesPosition.y - menuRayon, menuRayon * 2,
+							menuRayon * 2);
+					g2.setColor(Color.BLACK);
+					g2.drawOval(menuShapesPosition.x - menuRayon, menuShapesPosition.y - menuRayon, menuRayon * 2,
+							menuRayon * 2);
+					for (int i = 1; i <= 5; i++) {
+						double angle = Math.toRadians((360 / 5) * i);
+						int xi = (int) (menuRayon * Math.cos(angle) + menuShapesPosition.x);
+						int yi = (int) (menuRayon * Math.sin(angle) + menuShapesPosition.y);
+						g2.drawLine(menuShapesPosition.x, menuShapesPosition.y, xi, yi);
+					}
+				}
+				if (openMenuColors) {
+					g2.setColor(Color.GRAY);
+					g2.fillOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					g2.setColor(Color.BLACK);
+					g2.drawOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					for (int i = 1; i <= 7; i++) {
+						double angle = Math.toRadians((360 / 7) * i);
+						int xi = (int) (menuRayon * Math.cos(angle) + menuColorsPosition.x);
+						int yi = (int) (menuRayon * Math.sin(angle) + menuColorsPosition.y);
+						g2.drawLine(menuColorsPosition.x, menuColorsPosition.y, xi, yi);
+					}
+				}
 			}
 		});
 
-		addMouseListener(new MouseAdapter() {
+		panel.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
-				System.out.println(me);
-				if(me.getButton() == MouseEvent.BUTTON3) {
-					 
-		        	  System.out.println("Right Click!");
-		        	  
-		          }
+				if ((SwingUtilities.isRightMouseButton(me))) {
+					menuPosition = new Point(me.getX(), me.getY());
+					openMenu = true;
+					repaint();
+				}
 			}
-	    
+
+			public void mouseReleased(MouseEvent me) {
+				if ((SwingUtilities.isRightMouseButton(me))) {
+					openMenu = false;
+					openMenuShapes = false;
+					openMenuColors = false;
+					repaint();
+				}
+			}
+
 		});
-	
+
+		panel.addMouseMotionListener(new MouseAdapter() {
+			public void mouseDragged(MouseEvent me) {
+				if ((openMenu) && (!openMenuShapes) && (!openMenuColors)) {
+					int area = menu.getArea(menuPosition.x, menuPosition.y, me.getX(), me.getY());
+					if (area == 1) {
+						openMenuShapes = true;
+						//menuShapesPosition = new Point(menuPosition.x, menuPosition.y);
+						//openMenu = false;
+						menuShapesPosition = new Point(menuPosition.x, menuPosition.y - menuRayon);
+					} else if (area == 2) {
+						openMenuColors = true;
+						//menuColorsPosition = new Point(menuPosition.x, menuPosition.y);
+						//openMenu = false;
+						menuColorsPosition = new Point(menuPosition.x, menuPosition.y + menuRayon);
+					} else {
+						openMenu = false;
+					}
+				} else if (openMenuShapes) {
+					int area = menuShapes.getArea(menuShapesPosition.x, menuShapesPosition.y, me.getX(), me.getY());
+					if (area == 0) {
+						openMenuShapes = false;
+					} else {
+						panel.removeMouseListener(tool);
+						panel.removeMouseMotionListener(tool);
+						tool = tools[area - 1];
+						panel.addMouseListener(tool);
+						panel.addMouseMotionListener(tool);
+					}
+				} else if (openMenuColors) {
+					int area = menuColors.getArea(menuColorsPosition.x, menuColorsPosition.y, me.getX(), me.getY());
+					if (area == 1) {
+						actualColor = Color.BLACK;
+					} else if (area == 2) {
+						actualColor = Color.BLUE;
+					} else if (area == 3) {
+						actualColor = Color.RED;
+					} else if (area == 4) {
+						actualColor = Color.GREEN;
+					} else if (area == 5) {
+						actualColor = Color.PINK;
+					} else if (area == 6) {
+						actualColor = Color.YELLOW;
+					} else if (area == 7) {
+						actualColor = Color.MAGENTA;
+					} else {
+						openMenuColors = false;
+					}
+				}
+				repaint();
+			}
+		});
+
 		pack();
 		setVisible(true);
 
