@@ -55,10 +55,16 @@ class Paint extends JFrame {
 	Point menuShapesPosition;
 	Point menuColorsPosition;
 	int menuRayon = 100;
+	int textRayon = 75;
+	double textColorsAngle = Math.toRadians(360 / 7) / 2;
+	double textShapesAngle = Math.toRadians(360 / 5) / 2;
+	String menuNames[] = { "shapes, colors" };
+	String menuShapesNames[] = { "round rectangle", "ellipse", "rectangle", "pen", "line" };
+	String menuColorsNames[] = { "yellow", "pink", "green", "red", "blue", "black", "magenta" };
 
-	Menu menu = new Menu(menuRayon, 2);
-	Menu menuShapes = new Menu(menuRayon, 5);
-	Menu menuColors = new Menu(menuRayon, 7);
+	Menu menu = new Menu(menuRayon, 2, menuNames);
+	Menu menuShapes = new Menu(menuRayon, 5, menuShapesNames);
+	Menu menuColors = new Menu(menuRayon, 7, menuColorsNames);
 
 	@SuppressWarnings("serial")
 	class Tool extends AbstractAction implements MouseInputListener {
@@ -296,28 +302,42 @@ class Paint extends JFrame {
 							menuRayon * 2);
 					for (int i = 1; i <= 5; i++) {
 						double angle = Math.toRadians((360 / 5) * i);
+						double angleText = angle + textShapesAngle;
 						int xi = (int) (menuRayon * Math.cos(angle) + menuShapesPosition.x);
 						int yi = (int) (menuRayon * Math.sin(angle) + menuShapesPosition.y);
+						int xt = (int) (textRayon * Math.cos(angleText) + menuShapesPosition.x);
+						int yt = (int) (textRayon * Math.sin(angleText) + menuShapesPosition.y);
 						g2.drawLine(menuShapesPosition.x, menuShapesPosition.y, xi, yi);
+						g2.drawString(menuShapes.elemNames[i - 1],
+								xt - (menuShapes.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
+								yt + g2.getFont().getSize() / 4);
 					}
 				}
 				if (openMenuColors) {
 					g2.setColor(Color.GRAY);
-					g2.fillOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					g2.fillOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2,
+							menuRayon * 2);
 					g2.setColor(Color.BLACK);
-					g2.drawOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
+					g2.drawOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2,
+							menuRayon * 2);
 					for (int i = 1; i <= 7; i++) {
 						double angle = Math.toRadians((360 / 7) * i);
+						double angleText = angle + textColorsAngle;
 						int xi = (int) (menuRayon * Math.cos(angle) + menuColorsPosition.x);
 						int yi = (int) (menuRayon * Math.sin(angle) + menuColorsPosition.y);
+						int xt = (int) (textRayon * Math.cos(angleText) + menuColorsPosition.x);
+						int yt = (int) (textRayon * Math.sin(angleText) + menuColorsPosition.y);
 						g2.drawLine(menuColorsPosition.x, menuColorsPosition.y, xi, yi);
+						g2.drawString(menuColors.elemNames[i - 1],
+								xt - (menuColors.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
+								yt + g2.getFont().getSize() / 4);
 					}
 				}
 			}
 		});
 
 		panel.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent me) {
+			public void mouseClicked(MouseEvent me) {
 				if ((SwingUtilities.isRightMouseButton(me))) {
 					menuPosition = new Point(me.getX(), me.getY());
 					openMenu = true;
@@ -325,30 +345,31 @@ class Paint extends JFrame {
 				}
 			}
 
-			public void mouseReleased(MouseEvent me) {
+			/*public void mouseReleased(MouseEvent me) {
 				if ((SwingUtilities.isRightMouseButton(me))) {
 					openMenu = false;
 					openMenuShapes = false;
 					openMenuColors = false;
 					repaint();
 				}
-			}
+			}*/
 
 		});
 
 		panel.addMouseMotionListener(new MouseAdapter() {
-			public void mouseDragged(MouseEvent me) {
+			public void mouseMoved(MouseEvent me) {
 				if ((openMenu) && (!openMenuShapes) && (!openMenuColors)) {
 					int area = menu.getArea(menuPosition.x, menuPosition.y, me.getX(), me.getY());
+					System.out.println("area : " + area);
 					if (area == 1) {
 						openMenuShapes = true;
-						//menuShapesPosition = new Point(menuPosition.x, menuPosition.y);
-						//openMenu = false;
+						// menuShapesPosition = new Point(menuPosition.x, menuPosition.y);
+						openMenu = false;
 						menuShapesPosition = new Point(menuPosition.x, menuPosition.y - menuRayon);
 					} else if (area == 2) {
 						openMenuColors = true;
-						//menuColorsPosition = new Point(menuPosition.x, menuPosition.y);
-						//openMenu = false;
+						// menuColorsPosition = new Point(menuPosition.x, menuPosition.y);
+						openMenu = false;
 						menuColorsPosition = new Point(menuPosition.x, menuPosition.y + menuRayon);
 					} else {
 						openMenu = false;

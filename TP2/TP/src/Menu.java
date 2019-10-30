@@ -2,10 +2,12 @@ public class Menu {
 
 	int rayon;
 	int nbElement;
+	public String elemNames[];
 
-	public Menu(int rayon, int nbElement) {
+	public Menu(int rayon, int nbElement, String elemNames[]) {
 		this.rayon = rayon;
 		this.nbElement = nbElement;
+		this.elemNames = elemNames;
 	}
 
 	public int getArea(int centerX, int centerY, int x, int y) {
