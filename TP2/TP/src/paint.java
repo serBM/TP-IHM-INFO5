@@ -35,7 +35,7 @@ class Paint extends JFrame {
 	/*
 	 * variables initialization
 	 */
-	
+
 	Vector<ShapeCustom> shapesCustom = new Vector<ShapeCustom>();
 
 	Color actualColor = Color.BLACK; // current color when no one is selected
@@ -64,24 +64,28 @@ class Paint extends JFrame {
 	 * END variables initialization
 	 */
 
+	/*****************************************************************/
+
+	/*
+	 * Tool Class
+	 */
+
 	@SuppressWarnings("serial")
 	class Tool extends AbstractAction implements MouseInputListener {
 		Point o;
 		Shape shape;
-		
 		String name;
 
 		public Tool(String name) {
 			super(name);
 			this.name = name;
 		}
-		
+
 		public String getName() {
 			return this.name;
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("using tool " + this);
 			panel.removeMouseListener(tool);
 			panel.removeMouseMotionListener(tool);
 			tool = this;
@@ -116,6 +120,12 @@ class Paint extends JFrame {
 		public void mouseMoved(MouseEvent e) {
 		}
 	}
+	
+	/*****************************************************************/
+
+	/*
+	 * Tools list
+	 */
 
 	@SuppressWarnings("serial")
 	Tool tools[] = { new Tool("pen") {
@@ -190,6 +200,12 @@ class Paint extends JFrame {
 	},
 
 	};
+	
+	/*****************************************************************/
+
+	/*
+	 * Window
+	 */
 
 	@SuppressWarnings("serial")
 	public Paint(String title) {
@@ -197,7 +213,7 @@ class Paint extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
 		setTitle("IHM TP2 - VINCENT, THOMAS, VANDAL - 2019 - INFO5");
-		
+
 		/*
 		 * view with painted components - shapes - open the menu if a right click
 		 * occurred
@@ -210,7 +226,6 @@ class Paint extends JFrame {
 
 				g2.setColor(Color.WHITE); // set the background color of the window
 				g2.fillRect(0, 0, getWidth(), getHeight());
-					
 
 				/*
 				 * draws the shapes in the window using their associated colors
@@ -226,11 +241,9 @@ class Paint extends JFrame {
 				 */
 				if (openMenu) {
 					open(g2, menu);
-				}
-				else if (openMenuShapes) {
+				} else if (openMenuShapes) {
 					open(g2, menuShapes);
-				}
-				else if (openMenuColors) {
+				} else if (openMenuColors) {
 					open(g2, menuColors);
 				}
 			}
@@ -333,69 +346,69 @@ class Paint extends JFrame {
 
 	}
 
+	/*****************************************************************/
+
 	/*
-	 * display a tooltip rectangle that indicates what color is currently selected
+	 * Function to display a tooltip rectangle 
+	 * which indicates what color is currently selected
 	 */
+	
 	private void colorIndicator(Point point) {
 		Shape shape = null;
 		ShapeCustom sc;
-		
+
 		/*
-		 * only one occurrence of a tooltip
-		 * remove the other ones
+		 * only one occurrence of a tooltip remove the other ones
 		 */
 		for (int i = 0; i < shapesCustom.size(); i++) {
 			if (shapesCustom.get(i).getSpec() == 1)
 				shapesCustom.remove(shapesCustom.get(i));
 		}
-		
-		
-		if(tool == null) {
+
+		if (tool == null) {
 			// at the beginning, no tool is selected
 			// then do nothing
-		}
-		else if(tool.getName() == "round rectangle") {
+		} else if (tool.getName() == "round rectangle") {
 			RoundRectangle2D.Double tooltip = (RoundRectangle2D.Double) shape;
-			tooltip = new RoundRectangle2D.Double(point.x+10, point.y+10, 10, 10, 5, 5);
+			tooltip = new RoundRectangle2D.Double(point.x + 10, point.y + 10, 10, 10, 5, 5);
 			sc = new ShapeCustom((shape = tooltip), actualColor, 1);
 			shapesCustom.add(sc);
-		}
-		else if(tool.getName() == "rectangle") {
+		} else if (tool.getName() == "rectangle") {
 			Rectangle2D.Double tooltip = (Rectangle2D.Double) shape;
-			tooltip = new Rectangle2D.Double(point.x+10, point.y+10, 10, 10);
+			tooltip = new Rectangle2D.Double(point.x + 10, point.y + 10, 10, 10);
 			sc = new ShapeCustom((shape = tooltip), actualColor, 1);
 			shapesCustom.add(sc);
-		}
-		else if(tool.getName() == "pen") {
+		} else if (tool.getName() == "pen") {
 			Ellipse2D.Double tooltip = (Ellipse2D.Double) shape;
-			tooltip = new Ellipse2D.Double(point.x+10, point.y+10, 3, 3);
+			tooltip = new Ellipse2D.Double(point.x + 10, point.y + 10, 3, 3);
 			sc = new ShapeCustom((shape = tooltip), actualColor, 1);
 			shapesCustom.add(sc);
-		}
-		else if(tool.getName() == "ellipse") {
+		} else if (tool.getName() == "ellipse") {
 			Ellipse2D.Double tooltip = (Ellipse2D.Double) shape;
-			tooltip = new Ellipse2D.Double(point.x+10, point.y+10, 10, 10);
+			tooltip = new Ellipse2D.Double(point.x + 10, point.y + 10, 10, 10);
 			sc = new ShapeCustom((shape = tooltip), actualColor, 1);
 			shapesCustom.add(sc);
-		}
-		else if(tool.getName() == "line") {
+		} else if (tool.getName() == "line") {
 			Line2D.Double tooltip = (Line2D.Double) shape;
-			tooltip = new Line2D.Double(point.x+15, point.y+10, point.x+25, point.y+25);
+			tooltip = new Line2D.Double(point.x + 15, point.y + 10, point.x + 25, point.y + 25);
 			sc = new ShapeCustom((shape = tooltip), actualColor, 1);
 			shapesCustom.add(sc);
 		}
-		
+
 	}
+
+	/*****************************************************************/
 
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	public void open(Graphics g2, Menu menu) {
+	
+	private void open(Graphics g2, Menu menu) {
 
 		Color colorBackground = new Color(238, 238, 238);
 		Color colorBorder = new Color(214, 214, 214);
 		Color colorText = new Color(86, 86, 86);
-		
+
 		g2.setColor(colorBackground);
 		g2.fillOval(point.x - menu.getRadius(), point.y - menu.getRadius(), menu.getRadius() * 2, menu.getRadius() * 2);
 		g2.setColor(colorBorder);
@@ -414,6 +427,7 @@ class Paint extends JFrame {
 					yt + g2.getFont().getSize() / 4);
 		}
 	}
+	
 	/* main *********************************************************************/
 
 	public static void main(String argv[]) {
