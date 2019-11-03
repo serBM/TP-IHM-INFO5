@@ -8,7 +8,6 @@
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,21 +16,13 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.*;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
@@ -39,9 +30,6 @@ import javax.swing.event.MouseInputListener;
 
 class Paint extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	Vector<ShapeCustom> shapesCustom = new Vector<ShapeCustom>();
@@ -58,7 +46,6 @@ class Paint extends JFrame {
 
 	int menuRayon = 100;
 	int textRayon = 75;
-	// int lastArea = 0;
 
 	int nbMenus = 3;
 	int nbColors = 8;
@@ -75,6 +62,11 @@ class Paint extends JFrame {
 	Menu menu = new Menu(menuRayon, nbMenus, menuNames);
 	Menu menuShapes = new Menu(menuRayon, nbShapes, menuShapesNames);
 	Menu menuColors = new Menu(menuRayon, nbColors, menuColorsNames);
+	
+	Color colorBackground = new Color(238, 238, 238);
+	Color colorBorder = new Color(214, 214, 214);
+	Color colorText = new Color(86, 86, 86);
+	Color colorHover = new Color(45, 125, 189);
 
 	@SuppressWarnings("serial")
 	class Tool extends AbstractAction implements MouseInputListener {
@@ -200,160 +192,49 @@ class Paint extends JFrame {
 		super(title);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
-		add(new JToolBar() {
-			{
-				for (AbstractAction tool : tools) {
-					add(tool);
-				}
-			}
-		}, BorderLayout.NORTH);
 
-		JButton black = new JButton("black");
-		black.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.BLACK;
-			}
-		});
-
-		JButton blue = new JButton("blue");
-		blue.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.BLUE;
-			}
-		});
-
-		JButton red = new JButton("red");
-		red.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.RED;
-			}
-		});
-
-		JButton green = new JButton("green");
-		green.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.GREEN;
-			}
-		});
-
-		JButton pink = new JButton("pink");
-		pink.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.PINK;
-			}
-		});
-
-		JButton yellow = new JButton("yellow");
-		yellow.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.YELLOW;
-			}
-		});
-
-		JButton magenta = new JButton("magenta");
-		magenta.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				actualColor = Color.MAGENTA;
-			}
-		});
-
-		add(new JToolBar() {
-			{
-				add(black);
-				add(blue);
-				add(red);
-				add(green);
-				add(pink);
-				add(yellow);
-				add(magenta);
-
-			}
-		}, BorderLayout.SOUTH);
-
+		/*
+		 * view with painted components 
+		 *     - shapes
+		 *     - open the menu if a right click occurred
+		 */
 		add(panel = new JPanel() {
-
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-				g2.setColor(Color.WHITE);
+				g2.setColor(Color.WHITE); // set the background color of the window
 				g2.fillRect(0, 0, getWidth(), getHeight());
 
+				/*
+				 * draws the shapes in the window using their associated colors
+				 */
 				for (ShapeCustom shape : shapesCustom) {
 					g2.setColor(shape.getColor());
 					g2.draw(shape.getShape());
 				}
+				/*
+				 * right click opens menus
+				 */
 				if (openMenu) {
-					g2.setColor(Color.GRAY);
-					g2.fillOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
-					g2.setColor(Color.BLACK);
-					g2.drawOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2, menuRayon * 2);
-					for (int i = 1; i <= nbMenus; i++) {
-						double angle = Math.toRadians((360 / nbMenus) * i);
-						double angleText = angle + textMenusAngle;
-						int xi = (int) (menuRayon * Math.cos(angle) + menuPosition.x);
-						int yi = (int) (menuRayon * Math.sin(angle) + menuPosition.y);
-						int xt = (int) (textRayon * Math.cos(angleText) + menuPosition.x);
-						int yt = (int) (textRayon * Math.sin(angleText) + menuPosition.y);
-						g2.drawLine(menuPosition.x, menuPosition.y, xi, yi);
-						g2.drawString(menu.elemNames[i - 1],
-								xt - (menu.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
-								yt + g2.getFont().getSize() / 4);
-					}
+					open(g2, menuPosition, nbMenus, menu, textMenusAngle);
 				}
-				if (openMenuShapes) {
-					g2.setColor(Color.GRAY);
-					g2.fillOval(menuShapesPosition.x - menuRayon, menuShapesPosition.y - menuRayon, menuRayon * 2,
-							menuRayon * 2);
-					g2.setColor(Color.BLACK);
-					g2.drawOval(menuShapesPosition.x - menuRayon, menuShapesPosition.y - menuRayon, menuRayon * 2,
-							menuRayon * 2);
-					for (int i = 1; i <= nbShapes; i++) {
-						double angle = Math.toRadians((360 / nbShapes) * i);
-						double angleText = angle + textShapesAngle;
-						int xi = (int) (menuRayon * Math.cos(angle) + menuShapesPosition.x);
-						int yi = (int) (menuRayon * Math.sin(angle) + menuShapesPosition.y);
-						int xt = (int) (textRayon * Math.cos(angleText) + menuShapesPosition.x);
-						int yt = (int) (textRayon * Math.sin(angleText) + menuShapesPosition.y);
-						g2.drawLine(menuShapesPosition.x, menuShapesPosition.y, xi, yi);
-						g2.drawString(menuShapes.elemNames[i - 1],
-								xt - (menuShapes.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
-								yt + g2.getFont().getSize() / 4);
-					}
+				if (openMenuShapes) {	
+					open(g2, menuShapesPosition, nbShapes, menuShapes, textShapesAngle);
 				}
 				if (openMenuColors) {
-					g2.setColor(Color.GRAY);
-					g2.fillOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2,
-							menuRayon * 2);
-					g2.setColor(Color.BLACK);
-					g2.drawOval(menuColorsPosition.x - menuRayon, menuColorsPosition.y - menuRayon, menuRayon * 2,
-							menuRayon * 2);
-					for (int i = 1; i <= nbColors; i++) {
-						double angle = Math.toRadians((360 / nbColors) * i);
-						double angleText = angle + textColorsAngle;
-						int xi = (int) (menuRayon * Math.cos(angle) + menuColorsPosition.x);
-						int yi = (int) (menuRayon * Math.sin(angle) + menuColorsPosition.y);
-						int xt = (int) (textRayon * Math.cos(angleText) + menuColorsPosition.x);
-						int yt = (int) (textRayon * Math.sin(angleText) + menuColorsPosition.y);
-						g2.drawLine(menuColorsPosition.x, menuColorsPosition.y, xi, yi);
-						g2.drawString(menuColors.elemNames[i - 1],
-								xt - (menuColors.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
-								yt + g2.getFont().getSize() / 4);
-					}
+					open(g2, menuColorsPosition, nbColors, menuColors, textColorsAngle);
 				}
 			}
 		});
 
 		panel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
+				/*
+				 * opens the menu when right click in the window
+				 * only if no menu is already opened
+				 */
 				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)) {
 					menuPosition = new Point(me.getX(), me.getY());
 					openMenu = true;
@@ -369,6 +250,10 @@ class Paint extends JFrame {
 
 		});
 
+		/*
+		 * menu behaviour
+		 * when the mouse moves, changes the behavior of the menu
+		 */
 		panel.addMouseMotionListener(new MouseAdapter() {
 			int lastAreaMenu = 0;
 			int lastAreaShapes = 0;
@@ -444,6 +329,31 @@ class Paint extends JFrame {
 
 	}
 
+	/*
+	 * function that handles the appearance of the menus
+	 */
+	public void open(Graphics g2, Point menuPosition, int nb, Menu menu, double text) {
+		g2.setColor(colorBackground);
+		g2.fillOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2,
+				menuRayon * 2);
+		g2.setColor(colorBorder);
+		g2.drawOval(menuPosition.x - menuRayon, menuPosition.y - menuRayon, menuRayon * 2,
+				menuRayon * 2);
+		for (int i = 1; i <= nb; i++) {
+			double angle = Math.toRadians((360 / nb) * i);
+			double angleText = angle + text;
+			int xi = (int) (menuRayon * Math.cos(angle) + menuPosition.x);
+			int yi = (int) (menuRayon * Math.sin(angle) + menuPosition.y);
+			int xt = (int) (textRayon * Math.cos(angleText) + menuPosition.x);
+			int yt = (int) (textRayon * Math.sin(angleText) + menuPosition.y);
+			g2.setColor(colorBorder);
+			g2.drawLine(menuPosition.x, menuPosition.y, xi, yi);
+			g2.setColor(colorText);
+			g2.drawString(menu.elemNames[i - 1],
+					xt - (menu.elemNames[i - 1].length() * g2.getFont().getSize()) / 4,
+					yt + g2.getFont().getSize() / 4);
+		}
+	}
 	/* main *********************************************************************/
 
 	public static void main(String argv[]) {
