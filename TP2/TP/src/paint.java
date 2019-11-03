@@ -49,8 +49,8 @@ class Paint extends JFrame {
 	int textRadius = 75;
 
 	String menuNames[] = { "Colors", "Shapes", "← Back" };
-	String menuShapesNames[] = { "line", "round rectangle", "ellipse", "rectangle", "pen", "go back" };
-	String menuColorsNames[] = { "magenta", "yellow", "pink", "green", "red", "blue", "black", "go back" };
+	String menuShapesNames[] = { "Line", "Round rectangle", "Ellipse", "Rectangle", "Pen", "← Back" };
+	String menuColorsNames[] = { "Magenta", "Yellow", "Pink", "Green", "Red", "Blue", "Black", "← Back" };
 
 	Menu menu = new Menu(menuRadius, menuNames);
 	Menu menuShapes = new Menu(menuRadius, menuShapesNames);
@@ -325,22 +325,22 @@ class Paint extends JFrame {
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	public void open(Graphics g2, Point menuPosition, Menu menu) {
+	public void open(Graphics g2, Point position, Menu menu) {
 		g2.setColor(colorBackground);
-		g2.fillOval(menuPosition.x - menu.getRadius(), menuPosition.y - menu.getRadius(), menu.getRadius() * 2,
+		g2.fillOval(position.x - menu.getRadius(), position.y - menu.getRadius(), menu.getRadius() * 2,
 				menu.getRadius() * 2);
 		g2.setColor(colorBorder);
-		g2.drawOval(menuPosition.x - menu.getRadius(), menuPosition.y - menu.getRadius(), menu.getRadius() * 2,
+		g2.drawOval(position.x - menu.getRadius(), position.y - menu.getRadius(), menu.getRadius() * 2,
 				menu.getRadius() * 2);
 		for (int i = 1; i <= menu.getSize(); i++) {
 			double angle = Math.toRadians((360 / menu.getSize()) * i);
 			double angleText = angle + menu.getAngle();
-			int xi = (int) (menu.getRadius() * Math.cos(angle) + menuPosition.x);
-			int yi = (int) (menu.getRadius() * Math.sin(angle) + menuPosition.y);
-			int xt = (int) (textRadius * Math.cos(angleText) + menuPosition.x);
-			int yt = (int) (textRadius * Math.sin(angleText) + menuPosition.y);
+			int xi = (int) (menu.getRadius() * Math.cos(angle) + position.x);
+			int yi = (int) (menu.getRadius() * Math.sin(angle) + position.y);
+			int xt = (int) (textRadius * Math.cos(angleText) + position.x);
+			int yt = (int) (textRadius * Math.sin(angleText) + position.y);
 			g2.setColor(colorBorder);
-			g2.drawLine(menuPosition.x, menuPosition.y, xi, yi);
+			g2.drawLine(position.x, position.y, xi, yi);
 			g2.setColor(colorText);
 			g2.drawString(menu.objects[i - 1],
 					xt - (menu.objects[i - 1].length() * g2.getFont().getSize()) / 4,
