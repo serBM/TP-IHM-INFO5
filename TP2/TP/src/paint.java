@@ -21,9 +21,11 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.*;
 import java.util.Vector;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.MouseInputListener;
 
 /* paint *******************************************************************/
@@ -36,14 +38,11 @@ class Paint extends JFrame {
 
 	Color actualColor = Color.BLACK; // current color when no one is selected
 
-	/*
-	 * by default, no menu is opened
-	 */
 	boolean openMenu = false;
 	boolean openMenuShapes = false;
 	boolean openMenuColors = false;
 
-	Point menuPosition, menuShapesPosition, menuColorsPosition;
+	Point point = new Point(0, 0);
 
 	int menuRadius = 100;
 	int textRadius = 75;
@@ -52,10 +51,10 @@ class Paint extends JFrame {
 	String menuShapesNames[] = { "Line", "Round rectangle", "Ellipse", "Rectangle", "Pen", "← Back" };
 	String menuColorsNames[] = { "Magenta", "Yellow", "Pink", "Green", "Red", "Blue", "Black", "← Back" };
 
-	Menu menu = new Menu(menuRadius, menuNames);
-	Menu menuShapes = new Menu(menuRadius, menuShapesNames);
-	Menu menuColors = new Menu(menuRadius, menuColorsNames);
-	
+	Menu menu = new Menu(menuRadius, textRadius, menuNames);
+	Menu menuShapes = new Menu(menuRadius, textRadius, menuShapesNames);
+	Menu menuColors = new Menu(menuRadius, textRadius, menuColorsNames);
+
 	Color colorBackground = new Color(238, 238, 238);
 	Color colorBorder = new Color(214, 214, 214);
 	Color colorText = new Color(86, 86, 86);
@@ -90,6 +89,10 @@ class Paint extends JFrame {
 
 		public void mousePressed(MouseEvent e) {
 			o = e.getPoint();
+			for (int i = 0; i < shapesCustom.size(); i++) {
+				if (shapesCustom.get(i).getSpec() == 1)
+					shapesCustom.remove(shapesCustom.get(i));
+			}
 		}
 
 		public void mouseReleased(MouseEvent e) {
@@ -111,7 +114,7 @@ class Paint extends JFrame {
 				if (path == null) {
 					path = new Path2D.Double();
 					path.moveTo(o.getX(), o.getY());
-					ShapeCustom sc = new ShapeCustom((shape = path), actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = path), actualColor, 0);
 					shapesCustom.add(sc);
 				}
 				path.lineTo(e.getX(), e.getY());
@@ -124,7 +127,7 @@ class Paint extends JFrame {
 				Rectangle2D.Double rect = (Rectangle2D.Double) shape;
 				if (rect == null) {
 					rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-					ShapeCustom sc = new ShapeCustom((shape = rect), actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = rect), actualColor, 0);
 					shapesCustom.add(sc);
 				}
 				rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
@@ -138,7 +141,7 @@ class Paint extends JFrame {
 				Ellipse2D.Double ell = (Ellipse2D.Double) shape;
 				if (ell == null) {
 					ell = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-					ShapeCustom sc = new ShapeCustom((shape = ell), actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = ell), actualColor, 0);
 					shapesCustom.add(sc);
 				}
 				ell.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
@@ -152,7 +155,7 @@ class Paint extends JFrame {
 				RoundRectangle2D.Double roundRect = (RoundRectangle2D.Double) shape;
 				if (roundRect == null) {
 					roundRect = new RoundRectangle2D.Double(o.getX(), o.getY(), 0, 0, 30, 30);
-					ShapeCustom sc = new ShapeCustom((shape = roundRect), actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = roundRect), actualColor, 0);
 					shapesCustom.add(sc);
 				}
 				roundRect.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()),
@@ -166,7 +169,7 @@ class Paint extends JFrame {
 				Line2D.Double line = (Line2D.Double) shape;
 				if (line == null) {
 					line = new Line2D.Double(o.getX(), o.getY(), 0, 0);
-					ShapeCustom sc = new ShapeCustom((shape = line), actualColor);
+					ShapeCustom sc = new ShapeCustom((shape = line), actualColor, 0);
 					shapesCustom.add(sc);
 				}
 				line.setLine(o.getX(), o.getY(), abs(e.getX()), abs(e.getY()));
@@ -185,11 +188,16 @@ class Paint extends JFrame {
 		super(title);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
+		setTitle("IHM TP2 - VINCENT, THOMAS, VANDAL - 2019 - INFO5");
+		
+		/*
+		 * rectangle that indicates the current color
+		 */
+		// colorIndicator(point);
 
 		/*
-		 * view with painted components 
-		 *     - shapes
-		 *     - open the menu if a right click occurred
+		 * view with painted components - shapes - open the menu if a right click
+		 * occurred
 		 */
 		add(panel = new JPanel() {
 			public void paintComponent(Graphics g) {
@@ -206,72 +214,71 @@ class Paint extends JFrame {
 				for (ShapeCustom shape : shapesCustom) {
 					g2.setColor(shape.getColor());
 					g2.draw(shape.getShape());
+					if (shape.getSpec() == 1)
+						g2.fill(shape.getShape());
 				}
 				/*
 				 * right click opens menus where the mouse is located
 				 */
 				if (openMenu) {
-					open(g2, menuPosition, menu);
+					open(g2, menu);
 				}
-				if (openMenuShapes) {	
-					open(g2, menuShapesPosition, menuShapes);
+				if (openMenuShapes) {
+					open(g2, menuShapes);
 				}
 				if (openMenuColors) {
-					open(g2, menuColorsPosition, menuColors);
+					open(g2, menuColors);
 				}
 			}
 		});
 
 		panel.addMouseListener(new MouseAdapter() {
+
 			public void mouseClicked(MouseEvent me) {
 				/*
-				 * opens the menu when right click in the window
-				 * only if no menu is already opened
+				 * opens the menu when right click in the window only if no menu is already
+				 * opened
 				 */
 				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)) {
-					menuPosition = new Point(me.getX(), me.getY());
+					point = new Point(me.getX(), me.getY());
 					openMenu = true;
 					repaint();
 				}
 			}
-
-			/*
-			 * public void mouseReleased(MouseEvent me) { if
-			 * ((SwingUtilities.isRightMouseButton(me))) { openMenu = false; openMenuShapes
-			 * = false; openMenuColors = false; repaint(); } }
-			 */
-
 		});
 
 		/*
-		 * menu behaviour
-		 * when the mouse moves, changes the behavior of the menu
+		 * menu behaviour when the mouse moves, changes the behavior of the menu
 		 */
+
 		panel.addMouseMotionListener(new MouseAdapter() {
 			int lastAreaMenu = 0;
 			int lastAreaShapes = 0;
 			int lastAreaColors = 0;
 
 			public void mouseMoved(MouseEvent me) {
+
+				colorIndicator(new Point(me.getX(), me.getY()));
+
 				if ((openMenu) && (!openMenuShapes) && (!openMenuColors)) {
-					int area = menu.getArea(menuPosition.x, menuPosition.y, me.getX(), me.getY());
+					int area = menu.getArea(point.x, point.y, me.getX(), me.getY());
 					if (area != 0) {
 						lastAreaMenu = area;
 					} else {
 						if (lastAreaMenu == 1) {
 							openMenuShapes = true;
-							menuShapesPosition = new Point(me.getX(), me.getY());
+							point = new Point(me.getX(), me.getY());
 							openMenu = false;
 						} else if (lastAreaMenu == 2) {
 							openMenuColors = true;
-							menuColorsPosition = new Point(me.getX(), me.getY());
+							point = new Point(me.getX(), me.getY());
 							openMenu = false;
 						} else {
 							openMenu = false;
 						}
 					}
 				} else if (openMenuShapes) {
-					int area = menuShapes.getArea(menuShapesPosition.x, menuShapesPosition.y, me.getX(), me.getY());
+					int area = menuShapes.getArea(point.x, point.y, me.getX(), me.getY());
 					if (area != 0) {
 						lastAreaShapes = area;
 					} else {
@@ -282,13 +289,13 @@ class Paint extends JFrame {
 							panel.addMouseListener(tool);
 							panel.addMouseMotionListener(tool);
 						} else {
-							menuPosition = new Point(me.getX(), me.getY());
+							point = new Point(me.getX(), me.getY());
 							openMenu = true;
 						}
 						openMenuShapes = false;
 					}
 				} else if (openMenuColors) {
-					int area = menuColors.getArea(menuColorsPosition.x, menuColorsPosition.y, me.getX(), me.getY());
+					int area = menuColors.getArea(point.x, point.y, me.getX(), me.getY());
 					if (area != 0) {
 						lastAreaColors = area;
 					} else {
@@ -307,7 +314,7 @@ class Paint extends JFrame {
 						} else if (lastAreaColors == 7) {
 							actualColor = Color.MAGENTA;
 						} else {
-							menuPosition = new Point(me.getX(), me.getY());
+							point = new Point(me.getX(), me.getY());
 							openMenu = true;
 						}
 						openMenuColors = false;
@@ -322,28 +329,38 @@ class Paint extends JFrame {
 
 	}
 
+	private void colorIndicator(Point point) {
+		for (int i = 0; i < shapesCustom.size(); i++) {
+			if (shapesCustom.get(i).getSpec() == 1)
+				shapesCustom.remove(shapesCustom.get(i));
+		}
+
+		Shape shape = null;
+		Rectangle2D.Double colorRectangle = (Rectangle2D.Double) shape;
+		colorRectangle = new Rectangle2D.Double(point.x, point.y, 10, 10);
+		ShapeCustom sc = new ShapeCustom((shape = colorRectangle), actualColor, 1);
+		shapesCustom.add(sc);
+	}
+
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	public void open(Graphics g2, Point position, Menu menu) {
+	public void open(Graphics g2, Menu menu) {
 		g2.setColor(colorBackground);
-		g2.fillOval(position.x - menu.getRadius(), position.y - menu.getRadius(), menu.getRadius() * 2,
-				menu.getRadius() * 2);
+		g2.fillOval(point.x - menu.getRadius(), point.y - menu.getRadius(), menu.getRadius() * 2, menu.getRadius() * 2);
 		g2.setColor(colorBorder);
-		g2.drawOval(position.x - menu.getRadius(), position.y - menu.getRadius(), menu.getRadius() * 2,
-				menu.getRadius() * 2);
+		g2.drawOval(point.x - menu.getRadius(), point.y - menu.getRadius(), menu.getRadius() * 2, menu.getRadius() * 2);
 		for (int i = 1; i <= menu.getSize(); i++) {
 			double angle = Math.toRadians((360 / menu.getSize()) * i);
 			double angleText = angle + menu.getAngle();
-			int xi = (int) (menu.getRadius() * Math.cos(angle) + position.x);
-			int yi = (int) (menu.getRadius() * Math.sin(angle) + position.y);
-			int xt = (int) (textRadius * Math.cos(angleText) + position.x);
-			int yt = (int) (textRadius * Math.sin(angleText) + position.y);
+			int xi = (int) (menu.getRadius() * Math.cos(angle) + point.x);
+			int yi = (int) (menu.getRadius() * Math.sin(angle) + point.y);
+			int xt = (int) (menu.getTextRadius() * Math.cos(angleText) + point.x);
+			int yt = (int) (menu.getTextRadius() * Math.sin(angleText) + point.y);
 			g2.setColor(colorBorder);
-			g2.drawLine(position.x, position.y, xi, yi);
+			g2.drawLine(point.x, point.y, xi, yi);
 			g2.setColor(colorText);
-			g2.drawString(menu.objects[i - 1],
-					xt - (menu.objects[i - 1].length() * g2.getFont().getSize()) / 4,
+			g2.drawString(menu.objects[i - 1], xt - (menu.objects[i - 1].length() * g2.getFont().getSize()) / 4,
 					yt + g2.getFont().getSize() / 4);
 		}
 	}
