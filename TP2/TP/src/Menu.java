@@ -8,12 +8,13 @@ public class Menu {
 	int radius;
 	int size;
 	public String objects[];
+	double angle;
 
 	public Menu(int rayon, String objects[]) {
 		this.radius = rayon;
 		this.objects = objects;
 		this.size = this.objects.length;
-
+		this.angle = Math.toRadians(360 / this.size) / 2;
 	}
 
 	public int getArea(int centerX, int centerY, int x, int y) {
@@ -28,12 +29,16 @@ public class Menu {
 		}
 	}
 	
-	public int getRayon() {
+	public int getRadius() {
 		return this.radius;
 	}
 	
 	public int getSize() {
 		return this.size;
+	}
+	
+	public double getAngle() {
+		return this.angle;
 	}
 	
 	

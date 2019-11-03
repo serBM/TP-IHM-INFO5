@@ -34,30 +34,27 @@ class Paint extends JFrame {
 
 	Vector<ShapeCustom> shapesCustom = new Vector<ShapeCustom>();
 
-	Color actualColor = Color.BLACK;
+	Color actualColor = Color.BLACK; // current color when no one is selected
 
+	/*
+	 * by default, no menu is opened
+	 */
 	boolean openMenu = false;
 	boolean openMenuShapes = false;
 	boolean openMenuColors = false;
 
-	Point menuPosition;
-	Point menuShapesPosition;
-	Point menuColorsPosition;
+	Point menuPosition, menuShapesPosition, menuColorsPosition;
 
 	int menuRadius = 100;
 	int textRadius = 75;
 
-	String menuNames[] = { "colors", "shapes", "go back" };
+	String menuNames[] = { "Colors", "Shapes", "← Back" };
 	String menuShapesNames[] = { "line", "round rectangle", "ellipse", "rectangle", "pen", "go back" };
 	String menuColorsNames[] = { "magenta", "yellow", "pink", "green", "red", "blue", "black", "go back" };
 
 	Menu menu = new Menu(menuRadius, menuNames);
 	Menu menuShapes = new Menu(menuRadius, menuShapesNames);
 	Menu menuColors = new Menu(menuRadius, menuColorsNames);
-	
-	double textMenusAngle = Math.toRadians(360 / menu.getSize()) / 2;
-	double textColorsAngle = Math.toRadians(360 / menuColors.getSize()) / 2;
-	double textShapesAngle = Math.toRadians(360 / menuShapes.getSize()) / 2;
 	
 	Color colorBackground = new Color(238, 238, 238);
 	Color colorBorder = new Color(214, 214, 214);
@@ -211,16 +208,16 @@ class Paint extends JFrame {
 					g2.draw(shape.getShape());
 				}
 				/*
-				 * right click opens menus
+				 * right click opens menus where the mouse is located
 				 */
 				if (openMenu) {
-					open(g2, menuPosition, menu, textMenusAngle);
+					open(g2, menuPosition, menu);
 				}
 				if (openMenuShapes) {	
-					open(g2, menuShapesPosition, menuShapes, textShapesAngle);
+					open(g2, menuShapesPosition, menuShapes);
 				}
 				if (openMenuColors) {
-					open(g2, menuColorsPosition, menuColors, textColorsAngle);
+					open(g2, menuColorsPosition, menuColors);
 				}
 			}
 		});
@@ -328,18 +325,18 @@ class Paint extends JFrame {
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	public void open(Graphics g2, Point menuPosition, Menu menu, double text) {
+	public void open(Graphics g2, Point menuPosition, Menu menu) {
 		g2.setColor(colorBackground);
-		g2.fillOval(menuPosition.x - menuRadius, menuPosition.y - menuRadius, menuRadius * 2,
-				menuRadius * 2);
+		g2.fillOval(menuPosition.x - menu.getRadius(), menuPosition.y - menu.getRadius(), menu.getRadius() * 2,
+				menu.getRadius() * 2);
 		g2.setColor(colorBorder);
-		g2.drawOval(menuPosition.x - menuRadius, menuPosition.y - menuRadius, menuRadius * 2,
-				menuRadius * 2);
+		g2.drawOval(menuPosition.x - menu.getRadius(), menuPosition.y - menu.getRadius(), menu.getRadius() * 2,
+				menu.getRadius() * 2);
 		for (int i = 1; i <= menu.getSize(); i++) {
 			double angle = Math.toRadians((360 / menu.getSize()) * i);
-			double angleText = angle + text;
-			int xi = (int) (menuRadius * Math.cos(angle) + menuPosition.x);
-			int yi = (int) (menuRadius * Math.sin(angle) + menuPosition.y);
+			double angleText = angle + menu.getAngle();
+			int xi = (int) (menu.getRadius() * Math.cos(angle) + menuPosition.x);
+			int yi = (int) (menu.getRadius() * Math.sin(angle) + menuPosition.y);
 			int xt = (int) (textRadius * Math.cos(angleText) + menuPosition.x);
 			int yt = (int) (textRadius * Math.sin(angleText) + menuPosition.y);
 			g2.setColor(colorBorder);
