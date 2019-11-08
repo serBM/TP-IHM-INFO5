@@ -42,8 +42,6 @@ class Paint extends JFrame {
 
 	int openMenu = 0;
 
-	Point point;
-
 	int menuRadius = 100;
 	int textRadius = 75;
 
