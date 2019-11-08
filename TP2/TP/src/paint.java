@@ -33,9 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
-
-
-
 /* paint *******************************************************************/
 
 class Paint extends JFrame {
@@ -50,10 +47,6 @@ class Paint extends JFrame {
 
 	Color actualColor = Color.BLACK; // current color when no one is selected
 
-	boolean openMenu = false;
-	boolean openMenuShapes = false;
-	boolean openMenuColors = false;
-	boolean mode_pad = true;
 	Point point;
 
 	int menuRadius = 100;
@@ -66,9 +59,17 @@ class Paint extends JFrame {
 	Menu menu = new Menu(menuRadius, textRadius, menuNames);
 	Menu menuShapes = new Menu(menuRadius, textRadius, menuShapesNames);
 	Menu menuColors = new Menu(menuRadius, textRadius, menuColorsNames);
-		
+
 	Tool tool = null;
 	JPanel panel;
+	int lastAreaMenu = 0;
+	int lastAreaShapes = 0;
+	int lastAreaColors = 0;
+
+	boolean openMenu = false;
+	boolean openMenuShapes = false;
+	boolean openMenuColors = false;
+	boolean mode_pad = true;
 
 	/*
 	 * END variables initialization
@@ -130,7 +131,7 @@ class Paint extends JFrame {
 		public void mouseMoved(MouseEvent e) {
 		}
 	}
-	
+
 	/*****************************************************************/
 
 	/*
@@ -210,7 +211,7 @@ class Paint extends JFrame {
 	},
 
 	};
-	
+
 	/*****************************************************************/
 
 	/*
@@ -236,8 +237,7 @@ class Paint extends JFrame {
 
 				g2.setColor(Color.WHITE); // set the background color of the window
 				g2.fillRect(0, 0, getWidth(), getHeight());
-				
-			    
+
 				/*
 				 * draws the shapes in the window using their associated colors
 				 */
@@ -259,45 +259,82 @@ class Paint extends JFrame {
 				}
 			}
 		});
-		
-		
-		
-		
+
 		JButton pad = new JButton("Pad");
 		pad.addActionListener(new ActionListener() {
 
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        mode_pad = true;
-		    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mode_pad = true;
+			}
 		});
-			
+
 		JButton souris = new JButton("Souris");
-		
+
 		souris.addActionListener(new ActionListener() {
 
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        mode_pad = false;
-		    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mode_pad = false;
+			}
 		});
-		
 
-		JPanel hbox = new JPanel(); 
-	    hbox.add(souris);
-	    hbox.add(pad);
-	    panel.add(hbox);
+		JPanel hbox = new JPanel();
+		hbox.add(pad);
+		hbox.add(souris);
+		panel.add(hbox);
+
 		panel.addMouseListener(new MouseAdapter() {
-
 			public void mouseClicked(MouseEvent me) {
 				/*
 				 * opens the menu when right click in the window only if no menu is already
 				 * opened
 				 */
-				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)) {
+				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)
+						&& mode_pad) {
 					point = new Point(me.getX(), me.getY());
 					openMenu = true;
 					repaint();
+					System.out.println("mouse clicked mode pad");
+
+				}
+			}
+		});
+
+		panel.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent me) {
+				/*
+				 * opens the menu when right click in the window only if no menu is already
+				 * opened
+				 */
+				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)
+						&& (!mode_pad)) {
+					point = new Point(me.getX(), me.getY());
+					openMenu = true;
+					repaint();
+					System.out.println("mouse pressed mode souris");
+
+				}
+			}
+		});
+
+		panel.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent me) {
+				/*
+				 * opens the menu when right click in the window only if no menu is already
+				 * opened
+				 */
+				if ((SwingUtilities.isRightMouseButton(me)) && (openMenu) && (!mode_pad)) {
+					point = new Point(me.getX(), me.getY());
+					lastAreaMenu = 0;
+					lastAreaShapes = 0;
+					lastAreaColors = 0;
+
+					openMenu = false;
+					openMenuShapes = false;
+					openMenuColors = false;
+					repaint();
+					System.out.println("mouse released mode souris");
 				}
 			}
 		});
@@ -307,12 +344,8 @@ class Paint extends JFrame {
 		 */
 
 		panel.addMouseMotionListener(new MouseAdapter() {
-			int lastAreaMenu = 0;
-			int lastAreaShapes = 0;
-			int lastAreaColors = 0;
 
 			public void mouseMoved(MouseEvent me) {
-
 				colorIndicator(new Point(me.getX(), me.getY()));
 
 				if ((openMenu) && (!openMenuShapes) && (!openMenuColors)) {
@@ -387,10 +420,10 @@ class Paint extends JFrame {
 	/*****************************************************************/
 
 	/*
-	 * Function to display a tooltip rectangle 
-	 * which indicates what color is currently selected
+	 * Function to display a tooltip rectangle which indicates what color is
+	 * currently selected
 	 */
-	
+
 	private void colorIndicator(Point point) {
 		Shape shape = null;
 		ShapeCustom sc;
@@ -440,7 +473,7 @@ class Paint extends JFrame {
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	
+
 	private void open(Graphics g2, Menu menu) {
 
 		Color colorBackground = new Color(238, 238, 238);
@@ -465,7 +498,7 @@ class Paint extends JFrame {
 					yt + g2.getFont().getSize() / 4);
 		}
 	}
-	
+
 	/* main *********************************************************************/
 
 	public static void main(String argv[]) {
