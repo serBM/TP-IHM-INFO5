@@ -16,11 +16,18 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.util.Vector;
+
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -38,7 +45,7 @@ class Paint extends JFrame {
 
 	Vector<ShapeCustom> shapesCustom = new Vector<ShapeCustom>();
 
-	Color actualColor = Color.BLACK; // current color when no one is selected
+	Color actualColor = Color.BLUE; // current color when no one is selected
 
 	int openMenu = 0;
 
@@ -57,6 +64,8 @@ class Paint extends JFrame {
 
 	Tool tool = null;
 	JPanel panel;
+
+	boolean mode_pad = true;
 
 	/*
 	 * END variables initialization
@@ -204,6 +213,7 @@ class Paint extends JFrame {
 	/*
 	 * Window
 	 */
+	
 
 	@SuppressWarnings("serial")
 	public Paint(String title) {
@@ -247,6 +257,30 @@ class Paint extends JFrame {
 			}
 		});
 
+		JButton pad = new JButton("Pad");
+		pad.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mode_pad = true;
+			}
+		});
+
+		JButton souris = new JButton("Souris");
+
+		souris.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mode_pad = false;
+			}
+		});
+
+		JPanel hbox = new JPanel();
+		hbox.add(pad);
+		hbox.add(souris);
+		panel.add(hbox);
+
 		panel.addMouseListener(new MouseAdapter() {
 
 			public void mouseClicked(MouseEvent me) {
@@ -254,11 +288,40 @@ class Paint extends JFrame {
 				 * opens the menu when right click in the window only if no menu is already
 				 * opened
 				 */
-				if ((SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
+				if ((mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
 					openMenu = c.rightClick(openMenu, me.getPoint());
 				}
 				repaint();
 			}
+
+			public void mousePressed(MouseEvent me) {
+				/*
+				 * opens the menu when right click in the window only if no menu is already
+				 * opened
+				 */
+				if ((!mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
+					openMenu = c.pressMouse(openMenu, me.getPoint());
+				}
+				repaint();
+			}
+
+			public void mouseReleased(MouseEvent me) {
+				/*
+				 * opens the menu when right click in the window only if no menu is already
+				 * opened
+				 */
+				if ((SwingUtilities.isRightMouseButton(me)) && (!mode_pad)) {
+					openMenu = c.releaseMouse(openMenu, me.getPoint());
+					actualColor = c.getColor();
+					panel.removeMouseListener(tool);
+					panel.removeMouseMotionListener(tool);
+					tool = tools[c.getTool()];
+					panel.addMouseListener(tool);
+					panel.addMouseMotionListener(tool);
+					repaint();
+				}
+			}
+
 		});
 
 		/*
@@ -269,17 +332,36 @@ class Paint extends JFrame {
 
 			public void mouseMoved(MouseEvent me) {
 				colorIndicator(new Point(me.getX(), me.getY()));
-				openMenu = c.inMenuMoved(openMenu, me.getPoint());
-				if(openMenu == 0) {
-					actualColor = c.getColor();
-					panel.removeMouseListener(tool);
-					panel.removeMouseMotionListener(tool);
-					tool = tools[c.getTool()];
-					panel.addMouseListener(tool);
-					panel.addMouseMotionListener(tool);
+				if (mode_pad) {
+					openMenu = c.inMenuMoved(openMenu, me.getPoint());
+					if (openMenu == 0) {
+						actualColor = c.getColor();
+						panel.removeMouseListener(tool);
+						panel.removeMouseMotionListener(tool);
+						tool = tools[c.getTool()];
+						panel.addMouseListener(tool);
+						panel.addMouseMotionListener(tool);
+					}
 				}
 				repaint();
 			}
+
+			public void mouseDragged(MouseEvent me) {
+				colorIndicator(new Point(me.getX(), me.getY()));
+				if (!mode_pad) {
+					openMenu = c.inMenuMoved(openMenu, me.getPoint());
+					if (openMenu == 0) {
+						actualColor = c.getColor();
+						panel.removeMouseListener(tool);
+						panel.removeMouseMotionListener(tool);
+						tool = tools[c.getTool()];
+						panel.addMouseListener(tool);
+						panel.addMouseMotionListener(tool);
+					}
+				}
+				repaint();
+			}
+
 		});
 
 		pack();
