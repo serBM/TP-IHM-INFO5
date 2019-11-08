@@ -16,15 +16,25 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.util.Vector;
+
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
+
+
+
 
 /* paint *******************************************************************/
 
@@ -43,7 +53,7 @@ class Paint extends JFrame {
 	boolean openMenu = false;
 	boolean openMenuShapes = false;
 	boolean openMenuColors = false;
-
+	boolean mode_pad = true;
 	Point point;
 
 	int menuRadius = 100;
@@ -56,7 +66,7 @@ class Paint extends JFrame {
 	Menu menu = new Menu(menuRadius, textRadius, menuNames);
 	Menu menuShapes = new Menu(menuRadius, textRadius, menuShapesNames);
 	Menu menuColors = new Menu(menuRadius, textRadius, menuColorsNames);
-
+		
 	Tool tool = null;
 	JPanel panel;
 
@@ -226,7 +236,8 @@ class Paint extends JFrame {
 
 				g2.setColor(Color.WHITE); // set the background color of the window
 				g2.fillRect(0, 0, getWidth(), getHeight());
-
+				
+			    
 				/*
 				 * draws the shapes in the window using their associated colors
 				 */
@@ -248,7 +259,34 @@ class Paint extends JFrame {
 				}
 			}
 		});
+		
+		
+		
+		
+		JButton pad = new JButton("Pad");
+		pad.addActionListener(new ActionListener() {
 
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        mode_pad = true;
+		    }
+		});
+			
+		JButton souris = new JButton("Souris");
+		
+		souris.addActionListener(new ActionListener() {
+
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        mode_pad = false;
+		    }
+		});
+		
+
+		JPanel hbox = new JPanel(); 
+	    hbox.add(souris);
+	    hbox.add(pad);
+	    panel.add(hbox);
 		panel.addMouseListener(new MouseAdapter() {
 
 			public void mouseClicked(MouseEvent me) {
