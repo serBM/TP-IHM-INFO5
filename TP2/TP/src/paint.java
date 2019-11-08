@@ -40,9 +40,7 @@ class Paint extends JFrame {
 
 	Color actualColor = Color.BLACK; // current color when no one is selected
 
-	boolean openMenu = false;
-	boolean openMenuShapes = false;
-	boolean openMenuColors = false;
+	int openMenu = 0;
 
 	Point point;
 
@@ -56,6 +54,8 @@ class Paint extends JFrame {
 	Menu menu = new Menu(menuRadius, textRadius, menuNames);
 	Menu menuShapes = new Menu(menuRadius, textRadius, menuShapesNames);
 	Menu menuColors = new Menu(menuRadius, textRadius, menuColorsNames);
+
+	Controller c = new Controller(menu, menuShapes, menuColors);
 
 	Tool tool = null;
 	JPanel panel;
@@ -120,7 +120,7 @@ class Paint extends JFrame {
 		public void mouseMoved(MouseEvent e) {
 		}
 	}
-	
+
 	/*****************************************************************/
 
 	/*
@@ -200,7 +200,7 @@ class Paint extends JFrame {
 	},
 
 	};
-	
+
 	/*****************************************************************/
 
 	/*
@@ -239,12 +239,12 @@ class Paint extends JFrame {
 				/*
 				 * right click opens menus where the mouse is located
 				 */
-				if (openMenu) {
-					open(g2, menu);
-				} else if (openMenuShapes) {
-					open(g2, menuShapes);
-				} else if (openMenuColors) {
-					open(g2, menuColors);
+				if (openMenu == 1) {
+					menu.draw(g2);
+				} else if (openMenu == 2) {
+					menuShapes.draw(g2);
+				} else if (openMenu == 3) {
+					menuColors.draw(g2);
 				}
 			}
 		});
@@ -256,11 +256,10 @@ class Paint extends JFrame {
 				 * opens the menu when right click in the window only if no menu is already
 				 * opened
 				 */
-				if ((SwingUtilities.isRightMouseButton(me)) && (!openMenu) && (!openMenuShapes) && (!openMenuColors)) {
-					point = new Point(me.getX(), me.getY());
-					openMenu = true;
-					repaint();
+				if ((SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
+					openMenu = c.rightClick(openMenu, me.getPoint());
 				}
+				repaint();
 			}
 		});
 
@@ -269,73 +268,17 @@ class Paint extends JFrame {
 		 */
 
 		panel.addMouseMotionListener(new MouseAdapter() {
-			int lastAreaMenu = 0;
-			int lastAreaShapes = 0;
-			int lastAreaColors = 0;
 
 			public void mouseMoved(MouseEvent me) {
-
 				colorIndicator(new Point(me.getX(), me.getY()));
-
-				if ((openMenu) && (!openMenuShapes) && (!openMenuColors)) {
-					int area = menu.getArea(point.x, point.y, me.getX(), me.getY());
-					if (area != 0) {
-						lastAreaMenu = area;
-					} else {
-						if (lastAreaMenu == 1) {
-							openMenuShapes = true;
-							point = new Point(me.getX(), me.getY());
-							openMenu = false;
-						} else if (lastAreaMenu == 2) {
-							openMenuColors = true;
-							point = new Point(me.getX(), me.getY());
-							openMenu = false;
-						} else {
-							openMenu = false;
-						}
-					}
-				} else if (openMenuShapes) {
-					int area = menuShapes.getArea(point.x, point.y, me.getX(), me.getY());
-					if (area != 0) {
-						lastAreaShapes = area;
-					} else {
-						if (lastAreaShapes != 6) {
-							panel.removeMouseListener(tool);
-							panel.removeMouseMotionListener(tool);
-							tool = tools[lastAreaShapes - 1];
-							panel.addMouseListener(tool);
-							panel.addMouseMotionListener(tool);
-						} else {
-							point = new Point(me.getX(), me.getY());
-							openMenu = true;
-						}
-						openMenuShapes = false;
-					}
-				} else if (openMenuColors) {
-					int area = menuColors.getArea(point.x, point.y, me.getX(), me.getY());
-					if (area != 0) {
-						lastAreaColors = area;
-					} else {
-						if (lastAreaColors == 1) {
-							actualColor = Color.BLACK;
-						} else if (lastAreaColors == 2) {
-							actualColor = Color.BLUE;
-						} else if (lastAreaColors == 3) {
-							actualColor = Color.RED;
-						} else if (lastAreaColors == 4) {
-							actualColor = Color.GREEN;
-						} else if (lastAreaColors == 5) {
-							actualColor = Color.PINK;
-						} else if (lastAreaColors == 6) {
-							actualColor = Color.YELLOW;
-						} else if (lastAreaColors == 7) {
-							actualColor = Color.MAGENTA;
-						} else {
-							point = new Point(me.getX(), me.getY());
-							openMenu = true;
-						}
-						openMenuColors = false;
-					}
+				openMenu = c.inMenuMoved(openMenu, me.getPoint());
+				if(openMenu == 0) {
+					actualColor = c.getColor();
+					panel.removeMouseListener(tool);
+					panel.removeMouseMotionListener(tool);
+					tool = tools[c.getTool()];
+					panel.addMouseListener(tool);
+					panel.addMouseMotionListener(tool);
 				}
 				repaint();
 			}
@@ -349,10 +292,10 @@ class Paint extends JFrame {
 	/*****************************************************************/
 
 	/*
-	 * Function to display a tooltip rectangle 
-	 * which indicates what color is currently selected
+	 * Function to display a tooltip rectangle which indicates what color is
+	 * currently selected
 	 */
-	
+
 	private void colorIndicator(Point point) {
 		Shape shape = null;
 		ShapeCustom sc;
@@ -402,32 +345,7 @@ class Paint extends JFrame {
 	/*
 	 * function that handles the appearance of the menus
 	 */
-	
-	private void open(Graphics g2, Menu menu) {
 
-		Color colorBackground = new Color(238, 238, 238);
-		Color colorBorder = new Color(214, 214, 214);
-		Color colorText = new Color(86, 86, 86);
-
-		g2.setColor(colorBackground);
-		g2.fillOval(point.x - menu.getRadius(), point.y - menu.getRadius(), menu.getRadius() * 2, menu.getRadius() * 2);
-		g2.setColor(colorBorder);
-		g2.drawOval(point.x - menu.getRadius(), point.y - menu.getRadius(), menu.getRadius() * 2, menu.getRadius() * 2);
-		for (int i = 1; i <= menu.getSize(); i++) {
-			double angle = Math.toRadians((360 / menu.getSize()) * i);
-			double angleText = angle + menu.getAngle();
-			int xi = (int) (menu.getRadius() * Math.cos(angle) + point.x);
-			int yi = (int) (menu.getRadius() * Math.sin(angle) + point.y);
-			int xt = (int) (menu.getTextRadius() * Math.cos(angleText) + point.x);
-			int yt = (int) (menu.getTextRadius() * Math.sin(angleText) + point.y);
-			g2.setColor(colorBorder);
-			g2.drawLine(point.x, point.y, xi, yi);
-			g2.setColor(colorText);
-			g2.drawString(menu.objects[i - 1], xt - (menu.objects[i - 1].length() * g2.getFont().getSize()) / 4,
-					yt + g2.getFont().getSize() / 4);
-		}
-	}
-	
 	/* main *********************************************************************/
 
 	public static void main(String argv[]) {
