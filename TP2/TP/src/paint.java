@@ -261,22 +261,13 @@ class Paint extends JFrame {
 			}
 		});
 
-		JButton pad = new JButton("Pad");
-		pad.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mode_pad = true;
-			}
-		});
-
 		JButton souris = new JButton("Souris");
 
 		souris.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mode_pad = false;
+				mode_pad = !mode_pad;
 			}
 		});
 
@@ -290,7 +281,6 @@ class Paint extends JFrame {
 		});
 
 		JPanel hbox = new JPanel();
-		hbox.add(pad);
 		hbox.add(souris);
 		hbox.add(expert);
 		panel.add(hbox);
