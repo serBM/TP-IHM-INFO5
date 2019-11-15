@@ -27,7 +27,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -261,7 +261,7 @@ class Paint extends JFrame {
 			}
 		});
 
-		JButton souris = new JButton("Souris");
+		JToggleButton souris = new JToggleButton("Souris");
 
 		souris.addActionListener(new ActionListener() {
 
@@ -271,7 +271,7 @@ class Paint extends JFrame {
 			}
 		});
 
-		JButton expert = new JButton("Expert");
+		JToggleButton expert = new JToggleButton("Expert");
 		expert.addActionListener(new ActionListener() {
 
 			@Override
