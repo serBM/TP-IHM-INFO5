@@ -313,6 +313,9 @@ class Paint extends JFrame {
 				if ((SwingUtilities.isRightMouseButton(me)) && (!mode_pad)) {
 					openMenu = c.releaseMouse(openMenu, me.getPoint());
 					actualColor = c.getColor();
+					if(actualColor == null) {
+						actualColor = Color.BLACK;
+					}
 					panel.removeMouseListener(tool);
 					panel.removeMouseMotionListener(tool);
 					tool = tools[c.getTool()];
@@ -336,6 +339,9 @@ class Paint extends JFrame {
 					openMenu = c.inMenuMoved(openMenu, me.getPoint());
 					if (openMenu == 0) {
 						actualColor = c.getColor();
+						if(actualColor == null) {
+							actualColor = Color.BLACK;
+						}
 						panel.removeMouseListener(tool);
 						panel.removeMouseMotionListener(tool);
 						tool = tools[c.getTool()];
@@ -362,6 +368,9 @@ class Paint extends JFrame {
 					openMenu = c.inMenuMoved(openMenu, me.getPoint());
 					if (openMenu == 0) {
 						actualColor = c.getColor();
+						if(actualColor == null) {
+							actualColor = Color.BLACK;
+						}
 						panel.removeMouseListener(tool);
 						panel.removeMouseMotionListener(tool);
 						tool = tools[c.getTool()];
