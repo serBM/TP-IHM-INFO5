@@ -65,9 +65,6 @@ class Paint extends JFrame {
 	Tool tool = null;
 	JPanel panel;
 
-	Point expertPoint;
-	Point expertPointMoving;
-
 	boolean mode_pad = true;
 	boolean mode_expert = false;
 
@@ -142,7 +139,7 @@ class Paint extends JFrame {
 	@SuppressWarnings("serial")
 	Tool tools[] = { new Tool("pen") {
 		public void mouseDragged(MouseEvent e) {
-			if ((SwingUtilities.isLeftMouseButton(e))||((mode_expert)&&(openMenu != 0))) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
 				Path2D.Double path = (Path2D.Double) shape;
 				if (path == null) {
 					path = new Path2D.Double();
@@ -251,7 +248,7 @@ class Paint extends JFrame {
 				/*
 				 * right click opens menus where the mouse is located
 				 */
-				System.out.println("mode_expert : " + mode_expert);
+				
 				if (!mode_expert) {
 					if (openMenu == 1) {
 						menu.draw(g2);
@@ -306,7 +303,6 @@ class Paint extends JFrame {
 				 * opened
 				 */
 				if ((mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
-					expertPoint = me.getPoint();
 					openMenu = c.rightClick(openMenu, me.getPoint());
 				}
 				repaint();
@@ -318,7 +314,6 @@ class Paint extends JFrame {
 				 * opened
 				 */
 				if ((!mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
-					expertPoint = me.getPoint();
 					openMenu = c.pressMouse(openMenu, me.getPoint());
 				}
 				repaint();
