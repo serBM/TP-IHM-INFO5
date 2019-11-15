@@ -26,10 +26,8 @@ Le sujet détaillé est disponible sur ce dépot Git.
 
 Notre TP est visualisable dans le répértoire **TP**.
 
-La classe principale contenant notre main est : `paint.java`
+Nous avons organisés notre code selon la méthode MVC. Le model est le classe Menu (calcul du placement de la souris dans le menu, dessin du menu), la view est la classe paint (affichage de l'interface de dessin) et le controller est la classe Controller.
 
-  
-  
 
 ## Éléments implémentés
 
@@ -38,18 +36,21 @@ La classe principale contenant notre main est : `paint.java`
 Nous avons dans un premier temps implémenté plusieurs sortes de tracés (ellipse, trait à main levée, ligne droite, rectangle, rectangle arrondi). 
 Ensuite, nous avons ajouté plusieurs choix de couleurs. La couleur noire étant la couleur par défaut au tout début.
 
-Une sorte de tooltip a également été ajoutée afin de permettre à l'utilisateur de pouvoir visualiser quelle couleur et quelle forme sont choisies. Cette tooltip suit les mouvements de la souris.
-  
+Une sorte de tooltip a également été ajoutée afin de permettre à l'utilisateur de pouvoir visualiser quelle couleur et quelle forme sont choisies. Cette tooltip suit les mouvements de la souris. (elle est implémenté dans paint)
+ 
+Pour le menu, dans paint, nous donnons au constructeur de menu la taille souhaité et les titres des choix. Le constructeur fait le reste. Ainsi, il est facilement modifiable et peut être exporté.
   
 
 ## Mode d'utilisation
 
   
+Nous avons 2 modes de choix du menu différent et 1 mode expert.
+L'utilisation du menu diffère entre un utilisateur souris et un utilisateur pad. Nous avons donc choisi d'ajouter un choix utilisateur selon son mode d'utilisation. Les modes pad et souris sont respectivement plus facilement utilisable avec soit un pad soit une souris.
 
-Afin d'ouvrir notre menu, il faut effectuer un **clic droit**.
+Le **mode pad** (si le bouton souris n'est pas cliqué) : il faut faire un clic droit pour que le menu s'affiche. Il faut sortir du menu pour que le choix entre Couleurs et Formes soit validé.
+Un nouveau menu s'ouvre (Couleur ou Forme) et il faut de nouveau sortir du menu pour valider son choix.
 
-Le menu s'ouvre alors, donnant à l'utilisateur le choix entre `Couleurs` et `Formes`. 
+Le **mode souris** (si le bouton souris est cliqué) : il faut appuyer sur le bouton droit de la souris et dragguer dans le menu.Il faut sortir du menu pour que le choix entre Couleurs et Formes soit validé.
+Un nouveau menu s'ouvre (Couleur ou Forme), et pour que le choix soit validé, il faut soit relacher le clic droit sur une selection, soit sortir du menu.
 
-Pour sélectionner l'un ou l'autre, il faut passer la souris sur l'endroit sélectionné. Il n'est pas nécessaire de cliquer pour sélectionner, un simple trait dans la direction de l'item à sélectionner suffit. Pour sortir du menu, il faut passer la souris sur `Back`. 
-
-Pour dessiner, il faut effectuer un clic gauche et rester appuyer le temps de dessiner. Enfin, relâcher pour terminer de dessiner.
+Le **mode expert** (si le bouton expert est cliqué) : il est combinable avec le mode pad et le mode souris. C'est un mode déstiné aux personnes qui connaissent par coeur les menus. Il n'y a donc plus aucun affichage de menus. L'utilisateur sait cependant toujours l'outil selectionné grâce au tooltip évoqué plus haut.
