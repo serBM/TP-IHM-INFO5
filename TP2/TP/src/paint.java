@@ -65,7 +65,11 @@ class Paint extends JFrame {
 	Tool tool = null;
 	JPanel panel;
 
+	Point expertPoint;
+	Point expertPointMoving;
+
 	boolean mode_pad = true;
+	boolean mode_expert = false;
 
 	/*
 	 * END variables initialization
@@ -80,6 +84,7 @@ class Paint extends JFrame {
 	@SuppressWarnings("serial")
 	class Tool extends AbstractAction implements MouseInputListener {
 		Point o;
+		Point expert;
 		Shape shape;
 		String name;
 
@@ -137,7 +142,7 @@ class Paint extends JFrame {
 	@SuppressWarnings("serial")
 	Tool tools[] = { new Tool("pen") {
 		public void mouseDragged(MouseEvent e) {
-			if (SwingUtilities.isLeftMouseButton(e)) {
+			if ((SwingUtilities.isLeftMouseButton(e))||((mode_expert)&&(openMenu != 0))) {
 				Path2D.Double path = (Path2D.Double) shape;
 				if (path == null) {
 					path = new Path2D.Double();
@@ -213,7 +218,6 @@ class Paint extends JFrame {
 	/*
 	 * Window
 	 */
-	
 
 	@SuppressWarnings("serial")
 	public Paint(String title) {
@@ -247,12 +251,15 @@ class Paint extends JFrame {
 				/*
 				 * right click opens menus where the mouse is located
 				 */
-				if (openMenu == 1) {
-					menu.draw(g2);
-				} else if (openMenu == 2) {
-					menuShapes.draw(g2);
-				} else if (openMenu == 3) {
-					menuColors.draw(g2);
+				System.out.println("mode_expert : " + mode_expert);
+				if (!mode_expert) {
+					if (openMenu == 1) {
+						menu.draw(g2);
+					} else if (openMenu == 2) {
+						menuShapes.draw(g2);
+					} else if (openMenu == 3) {
+						menuColors.draw(g2);
+					}
 				}
 			}
 		});
@@ -276,9 +283,19 @@ class Paint extends JFrame {
 			}
 		});
 
+		JButton expert = new JButton("Expert");
+		expert.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mode_expert = !mode_expert;
+			}
+		});
+
 		JPanel hbox = new JPanel();
 		hbox.add(pad);
 		hbox.add(souris);
+		hbox.add(expert);
 		panel.add(hbox);
 
 		panel.addMouseListener(new MouseAdapter() {
@@ -289,6 +306,7 @@ class Paint extends JFrame {
 				 * opened
 				 */
 				if ((mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
+					expertPoint = me.getPoint();
 					openMenu = c.rightClick(openMenu, me.getPoint());
 				}
 				repaint();
@@ -300,16 +318,13 @@ class Paint extends JFrame {
 				 * opened
 				 */
 				if ((!mode_pad) && (SwingUtilities.isRightMouseButton(me)) && (openMenu == 0)) {
+					expertPoint = me.getPoint();
 					openMenu = c.pressMouse(openMenu, me.getPoint());
 				}
 				repaint();
 			}
 
 			public void mouseReleased(MouseEvent me) {
-				/*
-				 * opens the menu when right click in the window only if no menu is already
-				 * opened
-				 */
 				if ((SwingUtilities.isRightMouseButton(me)) && (!mode_pad)) {
 					openMenu = c.releaseMouse(openMenu, me.getPoint());
 					actualColor = c.getColor();
@@ -339,6 +354,16 @@ class Paint extends JFrame {
 						panel.removeMouseListener(tool);
 						panel.removeMouseMotionListener(tool);
 						tool = tools[c.getTool()];
+						panel.addMouseListener(tool);
+						panel.addMouseMotionListener(tool);
+						if(mode_expert) {
+							shapesCustom.remove(shapesCustom.size()-1);
+						}
+					} else if (mode_expert) {
+						actualColor = Color.GRAY;
+						panel.removeMouseListener(tool);
+						panel.removeMouseMotionListener(tool);
+						tool = tools[0];
 						panel.addMouseListener(tool);
 						panel.addMouseMotionListener(tool);
 					}
@@ -421,10 +446,6 @@ class Paint extends JFrame {
 	}
 
 	/*****************************************************************/
-
-	/*
-	 * function that handles the appearance of the menus
-	 */
 
 	/* main *********************************************************************/
 
